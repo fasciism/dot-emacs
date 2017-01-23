@@ -32,7 +32,8 @@
   (require 'ob-tangle))
 
 ;; Load up all literate org-mode files in this directory.
-(mapc #'org-babel-load-file (directory-files "~/.emacs.d" t "\\.org$"))
+(mapc #'org-babel-load-file (directory-files "~/.emacs.d" t "\[0-9\]\\{4\\}-\[0-9\]\\{2\\}-\[0-9\]\\{2\\}-.*\\.org$"))
+(mapc #'org-babel-load-file (directory-files "~/.emacs.d/drafts" t "\\.org$"))
 (mapc #'org-babel-load-file (directory-files "~/.emacs.p" t "\\.org$"))
 
 (custom-set-variables
