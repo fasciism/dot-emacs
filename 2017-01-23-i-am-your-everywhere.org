@@ -1,0 +1,11 @@
+I've been using Mutt for my email, but turning off the exit key for Emacs has made using Mutt inconvenient. The reason is that Mutt, like all decent programs, allows you to compose emails in the editor of your choice. For me, this ends up being Emacs in a terminal. Unfortunately when I am done composing an email, I need to exit Emacs to return control to Mutt... which is something I've made harder for myself.
+
+The obvious solution for this made me think of a line from [[https://www.youtube.com/watch?v%3DuLM5BWTYonI&feature%3Dyoutu.be&t%3D4m30s][JourneyQuest]], "I'm your everywhere!" Emacs offers =server-mode=, which allows =emacsclient= to use an existing Emacs instance for editing. All we have to do is enable server mode:
+
+#+BEGIN_SRC emacs-lisp
+  (server-mode)
+#+END_SRC
+
+Now I can change my normal declaration of =$EDITOR= from =emacs -nw= to: =emacsclient --alternate-editor=vi --create-frame=. This allows me to use vi if something goes wrong. I have no problem with vi, it's great, but Emacs is my preference. This also creates a new frame, which is what most people would call a window. Creating a new frame, which appears in my current view, is superior to making me change my virtual desktop from the Mutt terminal over to the dedicated Emacs virtual desktop.
+
+Of course I hope to stop using Mutt, moving my full email workflow into Emacs, but we're going slow and steady.
