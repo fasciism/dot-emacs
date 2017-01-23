@@ -8,10 +8,10 @@ I don't put two spaces after my periods, and I like using word-wrapping.
 
 Reading through the variables documentation using the =describe-variable= help facility (=C-h v sentence-end-double-space=), we find other variables of interest:
 
-#+BEGIN_QUOTE
+#+BEGIN_VERSE
 Non-nil means a single space does not end a sentence.
 
 This is relevant for filling.
-#+END_QUOTE
+#+END_VERSE
 
 Filling will be discussed tomorrow, and is known elsewhere as reflowing.

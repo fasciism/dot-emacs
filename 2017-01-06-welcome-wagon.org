@@ -11,10 +11,10 @@ This is unnecessary for me, so I'll disable it:
 
 In addition to the splash screen, I feel no need to be told what the =*scratch*= buffer is for with it saying this each time:
 
-#+BEGIN_QUOTE
+#+BEGIN_VERSE
   ;; This buffer is for text that is not saved, and for Lisp evaluation.
   ;; To create a file, visit it with C-x C-f and enter text in its buffer.
-#+END_QUOTE
+#+END_VERSE
 
 We can force the =*scratch*= buffer to start blank with:
 

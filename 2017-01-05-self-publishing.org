@@ -22,13 +22,13 @@ First, the =require= lines import the libraries necessary for the export process
 
 To perform the publishing, I run =M-x org-publish-current-file=:
 
-#+BEGIN_QUOTE
+#+BEGIN_VERSE
 (org-publish-current-file &optional FORCE ASYNC)
 
 Publish the current file.
 
 With prefix argument FORCE, force publish the file. When optional argument ASYNC is non-nil, publishing will be done asynchronously, in another process.
-#+END_QUOTE
+#+END_VERSE
 
 We'll talk about prefix arguments at a later date. For now, running this command populates the =_posts= directory of the Jekyll project that produces this blog.
 

@@ -16,7 +16,7 @@ I like my prompts simple. Prior to this, my prompt has been a lone percent sign 
 
 The =set-fontset-font= call is the heart of the above function, so let's look at its description:
 
-#+BEGIN_QUOTE
+#+BEGIN_VERSE
 (set-fontset-font NAME TARGET FONT-SPEC &optional FRAME ADD)
 
 Modify fontset NAME to use FONT-SPEC for TARGET characters.
@@ -31,7 +31,7 @@ FONT-SPEC may one of these:
 Optional 4th argument FRAME is a frame or nil for the selected frame that is concerned in the case that NAME is nil.
 
 Optional 5th argument ADD, if non-nil, specifies how to add FONT-SPEC to the font specifications for TARGET previously set. If it is ‘prepend’, FONT-SPEC is prepended. If it is ‘append’, FONT-SPEC is appended. By default, FONT-SPEC overrides the previous settings.
-#+END_QUOTE
+#+END_VERSE
 
 The end result of this is that we've configured Emacs to always display the ghost emoji in the Noto Emoji font.
 
