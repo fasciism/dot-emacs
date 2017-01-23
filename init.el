@@ -49,7 +49,7 @@
  '(org-src-fontify-natively t)
  '(package-selected-packages
    (quote
-    (elfeed guide-key browse-kill-ring undo-tree avy powerline solarized-theme use-package))))
+    (htmlize elfeed guide-key browse-kill-ring undo-tree avy powerline solarized-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
