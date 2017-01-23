@@ -1,0 +1,14 @@
+I have noticed the configurations of many others use a function similar to the one below to add some intelligence to moving to the start of a line. It seems like a good idea.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::cycle-bol-boi ()
+    "Cycle between beginning of line and beginning of indentation."
+    (interactive)
+    (let ((orig (point)))
+      (back-to-indentation)
+      (when (= orig (point))
+        (move-beginning-of-line 1))))
+
+  (global-set-key (kbd "C-a") 'mak::cycle-bol-boi)
+  (global-set-key (kbd "<home>") 'mak::cycle-bol-boi)
+#+END_SRC

@@ -1,0 +1,28 @@
+Continuing our war on mice (or in my case a Logitech M570 Trackball which I love dearly) inside Emacs, we will unbind most mouse events. We'll still allow scrolling, just in case we have a use for it.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::silent (&rest ignored)
+    (interactive)
+    nil)
+
+  (defun mak::mouse-disable (&rest ignored)
+    (dolist (event '("" "down-" "drag-" "double-" "triple-"))
+      (dotimes (button 3)
+        (let ((key (format "<%smouse-%d>" event (1+ button))))
+          ;; Bind to a function that returns nil.
+          ;; Binding to nil would unbind the key, resulting in errors when used.
+          ;; Alternatively, we could bind to individual lambdas, but we don't.
+          (global-set-key (kbd key) 'mak::silent)))))
+#+END_SRC
+
+Emacs Lisp, like most Lisp dialects, allows almost any character in a function name. Since this is a personal function, I have prefixed it with my first name and used C++'s namespace notation, despite that notation having no semantic meaning to Emacs Lisp. Since each Emacs frame requires mouse events to be disabled separately, we need to advise the Emacs function responsible for creating frames.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Run for first frame.
+  (mak::mouse-disable)
+
+  ;; Run in the context of subsequently created frames.
+  (advice-add 'make-frame-command :before #'mak::mouse-disable)
+#+END_SRC
+
+Advising is a Lisp concept that allows hooking a function before, after, or around (before and after) its execution. It is extremely useful for customizing behaviour.

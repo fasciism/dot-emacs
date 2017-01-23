@@ -1,0 +1,63 @@
+A problem with fonts and unicode is that many of the characters have no glyphs in a given font. This is going to bite us immediately unless we address it somehow. Our solution, [[http://ergoemacs.org/emacs/emacs_list_and_set_font.html][inspired by Ergo Emacs]], is to switch to a different font when rendering emoji. I've chosen to use [[https://www.google.com/get/noto/][Google Noto]] as my font for this, since it is dedicated to full Unicode coverage:
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::ghost-or-percent ()
+    (interactive)                                                   ; Allow call via M-x or binding
+    (let ((ghost "👻")                                              ; My desired prompt
+          (percent "%"))                                            ; My fallback prompt
+      (if (and (display-graphic-p)                                  ; Are we in the GUI?
+               (member "Noto Emoji" (font-family-list)))            ; Do we have the emoji font?
+          (progn (set-fontset-font t ?👻 "Noto Emoji" nil 'prepend) ; Use the emoji font for the ghost
+                 ghost)                                             ; Return desired prompt
+        percent)))                                                  ; Return fallback prompt
+#+END_SRC
+
+I like my prompts simple. Prior to this, my prompt has been a lone percent sign for the last decade. I'm keeping the percent sign as a fallback in case I'm on a terminal, or a host missing the Noto Emoji font.
+
+The =set-fontset-font= call is the heart of the above function, so let's look at its description:
+
+#+BEGIN_QUOTE
+(set-fontset-font NAME TARGET FONT-SPEC &optional FRAME ADD)
+
+Modify fontset NAME to use FONT-SPEC for TARGET characters.
+
+NAME is ... t for the default fontset.
+
+TARGET may be a single character to use FONT-SPEC for.
+
+FONT-SPEC may one of these:
+ * A font name string.
+
+Optional 4th argument FRAME is a frame or nil for the selected frame that is concerned in the case that NAME is nil.
+
+Optional 5th argument ADD, if non-nil, specifies how to add FONT-SPEC to the font specifications for TARGET previously set. If it is ‘prepend’, FONT-SPEC is prepended. If it is ‘append’, FONT-SPEC is appended. By default, FONT-SPEC overrides the previous settings.
+#+END_QUOTE
+
+The end result of this is that we've configured Emacs to always display the ghost emoji in the Noto Emoji font.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::eshell-prompt ()
+    (interactive)
+    (concat (if (not (eq 0 (current-column)))
+              "\n"
+              "")
+            (mak::ghost-or-percent)
+            " "))
+
+  (setq eshell-prompt-function 'mak::eshell-prompt)
+#+END_SRC
+
+Eshell has special behaviour when you have the point after the prompt, honouring input as commands, so we need to explain to it how to recognize our newly-customized prompt.
+
+#+BEGIN_SRC emacs-lisp
+  (setq eshell-prompt-regex
+        (lambda () (format "^%s " (mak::ghost-or-percent))))
+#+END_SRC
+
+Finally, we'll expand my war on welcome messages into Eshell:
+
+#+BEGIN_SRC emacs-lisp
+(setq eshell-banner-message "")
+#+END_SRC
+
+From here I can run =M-x eshell= and have a functional shell inside Emacs.

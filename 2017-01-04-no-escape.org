@@ -1,0 +1,29 @@
+As part of my dedication to staying in Emacs, I feel that I should endeavour to keep it open all of the time. While I can normally manage this, my mind occasionally wanders and reflexes take over and I find myself unintentionally chording the exit sequence. First, let's use the =describe-key= help facility (=C-h k=) to discover what is bound to the exit sequence (=C-h k C-x C-c=):
+
+#+BEGIN_QUOTE
+C-x C-c runs the command save-buffers-kill-terminal (found in global-map), which is an interactive compiled Lisp function in ‘files.el’.
+
+It is bound to C-x C-c, <menu-bar> <file> <exit-emacs>.
+
+(save-buffers-kill-terminal &optional ARG)
+
+Offer to save each buffer, then kill the current connection.
+If the current frame has no client, kill Emacs itself.
+#+END_QUOTE
+
+We can unbind the key using =global-unset-key=:
+
+#+BEGIN_SRC emacs-lisp :exports code
+  (global-unset-key (kbd "C-x C-c"))
+#+END_SRC
+
+Now when we chord =C-x C-c= we will receive a message in the minibuffer stating "C-x C-c is undefined". Now since my goal is only to prevent myself from unintentionally exiting Emacs, I should mention that I can still trigger the function that closes emacs (=exit-emacs=) by calling it directly with =M-x save-buffers-kill-emacs=. Let's look at the help for =M-x=, which is used to execute any command that is configured as being interactively callable:
+
+#+BEGIN_QUOTE
+(execute-extended-command PREFIXARG &optional COMMAND-NAME TYPED)
+
+This function is for interactive use only; in Lisp code use ‘command-execute’ instead.
+
+Read a command name, then read the arguments and call the command.
+To pass a prefix argument to the command you are invoking, give a prefix argument to ‘execute-extended-command’.
+#+END_QUOTE

@@ -1,0 +1,35 @@
+I previously mentioned that the sources for these blog entries are actually my configuration files. This means I'm actually living through this slow configuration process day by day. In truth, I have to live a couple days ahead of the blog to stay sane, but that will get better as things progress. One item that has been in place since day one is the export configuration for my Org-mode files. While on the first day I published the code that turns Org-mode files into live Elisp files, below is the setting that turns Org-mode files into Web pages.
+
+#+BEGIN_SRC emacs-lisp :exports code
+(require 'org)
+(require 'ox-publish)
+(require 'ox-html)
+
+;; Set up blog for export as an Org-mode project.
+(setq org-publish-project-alist
+      '(("fasciism"
+	:base-directory "~/.emacs.d/"
+	:publishing-directory "~/src/fasciism/_posts/"
+	:base-extension "org"
+	:sub-superscript ""
+	:toc nil
+	:publishing-function org-html-publish-to-html
+	:html-extension "html"
+	:body-only t)))
+#+END_SRC
+
+First, the =require= lines import the libraries necessary for the export process. I have not configured this process as much as I'd like, causing the blog to be ugly right now. We'll revisit this configuration at a later date by simply over-writing the value of =org-publish-project-alist= in a later blog entry.
+
+To perform the publishing, I run =M-x org-publish-current-file=:
+
+#+BEGIN_QUOTE
+(org-publish-current-file &optional FORCE ASYNC)
+
+Publish the current file.
+
+With prefix argument FORCE, force publish the file. When optional argument ASYNC is non-nil, publishing will be done asynchronously, in another process.
+#+END_QUOTE
+
+We'll talk about prefix arguments at a later date. For now, running this command populates the =_posts= directory of the Jekyll project that produces this blog.
+
+As of today, this blog has a Twitter account, [[https://twitter.com/fasciism][@fasciism]].

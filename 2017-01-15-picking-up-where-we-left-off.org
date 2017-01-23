@@ -1,0 +1,7 @@
+One nice feature I've experienced in some Vim installations is the editor remembering where my cursor was the last time I viewed a file. Emacs can do that, too:
+
+#+BEGIN_SRC emacs-lisp
+  (setq save-place-file "~/.emacs.d/saved-point-places"
+        save-place-forget-unreadable-files nil)
+  (save-place-mode t)
+#+END_SRC

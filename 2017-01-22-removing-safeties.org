@@ -1,0 +1,56 @@
+This blog is not focused on the specifics of Emacs lisp, but as we use new concepts I'll try and talk about them briefly. In elisp, symbols are not tied to a single meaning. They are nuanced, and may have variables, functions, or properties attached to them. We previously used this when we ran =(fset 'yes-or-no-p 'y-or-n-p)= to change the function associated with a symbol. All of the times we've run =setq= we have been setting the value associated with a symbol. Today we'll be setting the property associated with a symbol.
+
+Let's fool around with this a bit. First we make a function, and disable it.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::test-disabling ()
+    "XXX-MAK: DEMO FUNCTION"
+    (interactive)
+    (message "Disabled: %s"
+             (get 'mak::test-disabling 'disabled)))
+  (put 'mak::test-disabling 'disabled "This function has been disabled as a demonstration.")
+#+END_SRC
+
+Now let's run the function non-interactively, by calling it from elisp as opposed to a =M-x= or a keybinding, and see what happens.
+
+#+BEGIN_SRC emacs-lisp
+  (mak::test-disabling)
+#+END_SRC
+
+This prints the message =Disabled: This function has been disabled as a demonstration.= as expected. Next we'll bind it to a key, only inside the current buffer for safety, and then trigger the key to see what happens.
+
+#+BEGIN_SRC emacs-lisp
+  (local-set-key (kbd "C-M-D") 'mak::test-disabling)
+#+END_SRC
+
+This results in the following buffer being displayed:
+
+[[http://fasciism.com/img/2017-01-22-removing-safeties.png]]
+
+Once I enter =y=, the function executes and displays =Disabled: nil=. Now that we have a good handle on this, let's clean up the mess we just made:
+
+#+BEGIN_SRC emacs-lisp
+  (fmakunbound 'mak::test-disabling)
+  (local-unset-key (kbd "C-M-D"))
+#+END_SRC
+
+We could have used functions we already knew to bind things to =nil=, but the functions above are more appropriate and have the potential to be more thorough.
+
+Now, let's take the safeties off. We'll start with the region-based case adjustments. We've not discussed the region, so just think of it as the highlighted selection. These commands are constantly useful to me when I'm tidying up text from other sources.
+
+#+BEGIN_SRC emacs-lisp
+(put 'downcase-region  'disabled nil)
+(put 'upcase-region    'disabled nil)
+#+END_SRC
+
+The narrowing functions allow a buffer to alter its display to only include the desired text. This is useful both for blocking out distracting elements of a buffer, such as everything except a single function or paragraph, and for making and running keyboard macros without risking damage to unrelated sections of the buffer.
+
+#+BEGIN_SRC emacs-lisp
+(put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
+Finally, the ability to set a goal column is useful when dealing with column-based data, and for keyboard macros. Setting a goal column means that when the point (cursor) enters a new line, it will attempt (if the line is long enough) to place itself at the specified column.
+
+#+BEGIN_SRC emacs-lisp
+(put 'set-goal-column  'disabled nil)
+#+END_SRC

@@ -1,0 +1,8 @@
+Since clearing my configuration, my filesystem has started to drown in =*~= files and the occasional =#*#= file. This is a result of Emacs's default safety net, which I do not appreciate.
+
+#+BEGIN_SRC emacs-lisp
+  (setq auto-save-default nil  ; Prevent *~  files
+        make-backup-files nil) ; Prevent #*# files
+#+END_SRC
+
+I'm sure I'll live to regret this. You'll notice that I used the more compact form of setting multiple variables this time. I'm going to stick with that from now on.

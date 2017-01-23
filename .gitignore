@@ -1,0 +1,11 @@
+# Ignore everything by default.
+/*
+
+# Include this file.
+!/.gitignore
+
+# Include the bootstrap file.
+!/init.el
+
+# Include the literate org-mode files in the root.
+!/*.org

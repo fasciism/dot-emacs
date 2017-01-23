@@ -1,0 +1,21 @@
+Normally =<backspace>= is bound to =backward-delete-char-untabify=, meaning that if you have the cursor to the right of a tab, and then backspace, it will convert the tab into 8 spaces and remove one. I don't find that intuitive. I'd prefer that backspace delete a single character, whatever it may be.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<backspace>") 'backward-delete-char)
+#+END_SRC
+
+I'd also like to be able to tell if a file is indented with tabs or spaces. I like tabs for indentation, and spaces for alignment, personally. Let's enable =whitespace-mode=, allowing us to see a variety of whitespace-related issues:
+
+#+BEGIN_SRC emacs-lisp
+  (setq whitespace-style '(face trailing tabs empty space-after-tab tab-mark))
+  (add-hook 'text-mode-hook 'whitespace-mode)
+  (add-hook 'prog-mode-hook 'whitespace-mode)
+#+END_SRC
+
+Now we will see tabs as =»=, and trailing spaces and lines in the file will appear red.
+
+By default, =M-SPC= turns a run of whitespace into a single space, and =M-\= turns a run of whitespace into nothing. It's more useful to have a single key binding for this that cycles through those options, and back to nothing.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-SPC") 'cycle-spacing)
+#+END_SRC

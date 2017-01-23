@@ -1,0 +1,5 @@
+The blinking cursor is in some ways a useful feedback mechanism: it draws your attention to it and indicates that the terminal hasn't stalled. Personally, I don't want it drawing my attention, since attention is a precious, limited, and fleeting resource. I also use the GUI almost exclusively, so terminal stalls aren't as frequent.
+
+#+BEGIN_SRC emacs-lisp
+  (blink-cursor-mode -1)
+#+END_SRC

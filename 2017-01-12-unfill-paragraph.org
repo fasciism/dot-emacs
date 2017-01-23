@@ -1,0 +1,32 @@
+I've been into plain text for fifteen years now, and for much of that time I adhered to the rule of maintaining an eighty-character column width. While I usually continue to adhere to that for comments in source code, I've recently softened my stance when it comes to other text. This change occurred during the writing of the thesis proposal for my Master's degree (currently in progress). It turns out that viewing diffs (even word diffs) is difficult when text changes reflow the paragraph onto different lines. So as a result of my newly-found love for text that is easily diffed, I sought out a way to turn paragraphs containing line breaks into a single, unbroken line.
+
+In Emacs, the process of reflowing text to fit between the left margin and a chosen column is called 'filling'. Emacs maintains a variable, =fill-column=, which defaults to =70=. This variable is used by =fill-paragraph= (bound to =M-q=) and together they are used to reflow text into a given column size. Frequently, both in fixing my thesis proposal and copying snippets of text into this blog, I need to reflow text as though it had an infinite column width, and the below does just that:
+
+#+BEGIN_SRC emacs-lisp
+  ;;; Originally by Stefan Monnier <foo@acm.org>
+  (defun mak::unfill-paragraph (&optional region)
+    "Takes a multi-line paragraph and makes it into a single line of text."
+    (interactive (progn (barf-if-buffer-read-only) '(t)))
+    (let ((fill-column (point-max)))
+      (fill-paragraph nil region)))
+#+END_SRC
+
+Since =fill-paragraph= is bound to =M-q=, binding its complement to =M-Q= seems appropriate:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-Q") 'mak::unfill-paragraph)
+#+END_SRC
+
+I don't want text to scroll horizontally in a window, nor do I wish for it to wrap in the middle of a word. =visual-line-mode= takes care of that. Here we add a hook to all modes that inherit from =text-mode=, which is most writing/programming modes, that enables =visual-line-mode= in their buffers:
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+#+END_SRC
+
+I still use =fill-paragraph= on occasion, so we will give it a more modern value:
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default fill-column 80)
+#+END_SRC
+
+I use =setq-default= here instead of =setq= because some variables are global, and some are local to the buffer in which they are set. =setq-default= provides a default value for buffer-local values, like =fill-column=.

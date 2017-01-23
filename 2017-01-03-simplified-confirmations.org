@@ -1,0 +1,27 @@
+There are many great choices for the first real customization to make to a stock Emacs configuration, but I've chosen one that to me most represents taking the safety off: simplifying confirmations via =yes-or-no-p=. Lisp has a tradition of using the =p=-suffix to denote predicates, statements which can be either true or false. Emacs's offers excellent built-in help facilities, one of which searches the documentation of symbols (i.e., docstrings) for a pattern. Using this help facility, called =apropos-documentation= (=C-h d yes-or-no-p=), describes the function of interest as:
+
+#+BEGIN_QUOTE
+  (yes-or-no-p PROMPT)
+
+  Ask user a yes-or-no question. Return t if answer is yes, and nil if the answer is no. PROMPT is the string to display to ask the question. It should end in a space; =yes-or-no-p' adds "(yes or no) " to it.
+
+  The user must confirm the answer with RET, and can edit it until it has been confirmed.
+#+END_QUOTE
+
+Typing =yes= and =no= quickly becomes tiresome. Thankfully there's =y-or-n-p=, described as:
+
+#+BEGIN_QUOTE
+  (y-or-n-p PROMPT)
+
+  Ask user a "y or n" question. Return t if answer is "y". PROMPT is the string to display to ask the question. It should end in a space; `y-or-n-p' adds "(y or n) " to it.
+
+  No confirmation of the answer is requested; a single character is enough. SPC also means yes, and DEL means no.
+#+END_QUOTE
+
+This feels dangerous, but Emacs has great undo capabilities and the convenience is appreciable, so let's pull the trigger.
+
+#+BEGIN_SRC emacs-lisp :exports code
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+The reason that I've used =fset= above is that symbols have separate function and value cells, similar to how Lisp uses address (=car=) and data (=cdr=) cells.

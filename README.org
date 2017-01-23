@@ -1,0 +1,1 @@
+This is a series of Emacs Org-mode files that are published to produce the blog at http://fASCIIsm.com/. These settings comprise the primary configuration for my instance of Emacs, stored at =~/.emacs.d=. I maintain another directory, =~/.emacs.p=, for sensitive settings that I wish to remain private.

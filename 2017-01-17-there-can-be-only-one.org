@@ -1,0 +1,9 @@
+Once thing you start running into when you have many buffers is colliding names. For instance, if I open up two files =~/foo/test= and =~/bar/test= I would have two buffers named =test<1>= and =test<2>=. This depends on the version of Emacs, but is not very attractive.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'post-forward
+        uniquify-separator "::")
+#+END_SRC
+
+Now those two buffers would be named =test::foo= and =test::bar=, which I find more palatable.
