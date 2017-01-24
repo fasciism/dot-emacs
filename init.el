@@ -33,7 +33,7 @@
 
 ;; Load up all literate org-mode files in this directory.
 (mapc #'org-babel-load-file (directory-files "~/.emacs.d" t "\[0-9\]\\{4\\}-\[0-9\]\\{2\\}-\[0-9\]\\{2\\}-.*\\.org$"))
-(mapc #'org-babel-load-file (directory-files "~/.emacs.d/drafts" t "\\.org$"))
+(mapc #'org-babel-load-file (directory-files "~/.emacs.d/drafts" t "YYYY-MM-DD-.*\\.org$"))
 (mapc #'org-babel-load-file (directory-files "~/.emacs.p" t "\\.org$"))
 
 (custom-set-variables
@@ -50,7 +50,7 @@
  '(org-src-fontify-natively t)
  '(package-selected-packages
    (quote
-    (htmlize elfeed guide-key browse-kill-ring undo-tree avy powerline solarized-theme use-package))))
+    (bbdb beacon htmlize elfeed guide-key browse-kill-ring undo-tree avy powerline solarized-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
