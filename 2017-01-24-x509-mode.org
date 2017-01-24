@@ -1,0 +1,128 @@
+As part of my job, I often have to look at X.509 (SSL/TLS) certificates. I almost never want to see them in their raw state, a blob of unintelligible Base64 or binary. When opening an image in Emacs, the image is displayed in the window by default, and =C-c C-c= toggles between the image and its representation on disk. I want to have the same thing for X.509 certificates.
+
+First we create the most important thing for any node, the hook that facilitates customization.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar x509-certificate-mode-hook nil)
+#+END_SRC
+
+Then we build a function that can take a buffer and pipe it through the =openssl x509= command. This function needs to be smart enough to detect errors and undo any damage it causes on error.
+
+#+BEGIN_SRC emacs-lisp
+  (defun x509-certificate-parse-command (encoding)
+    "Parse the buffer using OpenSSL's x509 command and the specified encoding."
+    (let ((errbuf (generate-new-buffer-name "*x509-parse-error*")))
+      ;; Try to parse buffer using specified encoding.
+      (shell-command-on-region
+       (point-min)
+       (point-max)
+       (format "openssl x509 -text -noout -inform %s" encoding)
+       (buffer-name)
+       t
+       errbuf)
+      ;; Check for failure, represented by the existence of errbuf.
+      (if (get-buffer errbuf)
+          ;; Restore buffer to original state.
+          (progn
+            (kill-buffer errbuf)
+            (insert x509-certificate-mode-text)
+            nil)
+        t)))
+#+END_SRC
+
+Next we need a pair of functions that can transform the buffer between parsed and raw states. Two variables will be needed, which should be local to the buffer: one to hold the raw buffer contents, and another to track the current state of the buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (defun x509-certificate-parse ()
+    "Parse the buffer as a certificate, trying multiple encodings."
+    (interactive)
+    (if (not (eq x509-certificate-mode-display :raw))
+        (error "The buffer is not in :raw mode, it's in %s mode."
+               x509-certificate-mode-display)
+      (let ((modified (buffer-modified-p)))
+        ;; Save the contents of the buffer.
+        (setq x509-certificate-mode-text (buffer-string))
+        (read-only-mode -1)
+        ;; Try to convert the buffer through different formats.
+        (if (not (x509-certificate-parse-command "pem"))
+            (if (not (x509-certificate-parse-command "der"))
+                (error "Failed to parse buffer as X.509 certificate.")))
+        (read-only-mode 1)
+        ;; Restore previous modification state.
+        (set-buffer-modified-p modified)
+        (setq x509-certificate-mode-display :parsed))))
+
+  (defun x509-certificate-raw ()
+    "Revert buffer to unparsed contents."
+    (interactive)
+    (if (not (eq x509-certificate-mode-display :parsed))
+        (error "The buffer is not in :parsed mode, it's in %s mode."
+               x509-certificate-mode-display)
+      (let ((modified (buffer-modified-p)))
+        ;; Delete the buffer, which currently contains the parsed format.
+        (read-only-mode -1)
+        (erase-buffer)
+        ;; Convert the buffer into its raw format.
+        (insert x509-certificate-mode-text)
+        (read-only-mode 1)
+        ;; Restore previous modification state.
+        (set-buffer-modified-p modified)
+        (setq x509-certificate-mode-display :raw))))
+#+END_SRC
+
+With the transformation functions in place, we would like a keybinding to easily toggle between them. This is done by making a function that dispatches based on the state variable. We also create a keybinding for this mode, instead of tainting the global key map with our function.
+
+#+BEGIN_SRC emacs-lisp
+  (defun x509-certificate-toggle-display ()
+    "Toggle between raw and parsed displays of the buffer."
+    (interactive)
+    (cond ((eq x509-certificate-mode-display :parsed)
+           (x509-certificate-raw))
+          ((eq x509-certificate-mode-display :raw)
+           (x509-certificate-parse))
+          (t
+           (error "Variable x509-certificate-mode-display is in an unknown state: %s"
+                  x509-certificate-mode-display))))
+
+  (defvar x509-certificate-mode-map
+    (let ((map (make-keymap)))
+      (define-key map (kbd "C-c C-c") 'x509-certificate-toggle-display)
+      map)
+    "Keymap for X.509 Certificate major mode")
+#+END_SRC
+
+Calling modes manually via =M-x= is a pain, so we add likely extensions to a list that maps them to our new major mode. Certificates often have wacky extensions, though, so we also provide a regular expression to match text at the beginning of the buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.\\(der\\|crt\\|pem\\)\\'" . x509-certificate-mode))
+  (add-to-list 'magic-mode-alist '("-----BEGIN CERTIFICATE-----" . x509-certificate-mode))
+#+END_SRC
+
+Finally, we create our major mode and register it in the Emacs environment. Overly verbose comments are inline.
+
+#+BEGIN_SRC emacs-lisp
+  (defun x509-certificate-mode ()
+    "Major mode for viewing X.509 certificates"
+    ;; Ensure this function is callable by M-x.
+    (interactive)
+    ;; Clear the slate.
+    (kill-all-local-variables)
+    ;; Use our key map just for this buffer
+    (use-local-map x509-certificate-mode-map)
+    ;; Set the symbol (computer-recognizable) and name (human-visible).
+    (setq major-mode 'x509-certificate-mode
+          mode-name "X.509")
+    ;; Create the two buffer-local variables on which our functions depend.
+    (defvar-local x509-certificate-mode-display :raw
+      "Current display mode of the data")
+    (defvar-local x509-certificate-mode-text nil
+      "Original text of the buffer")
+    ;; Run the customization hooks.
+    (run-hooks 'x509-certificate-mode-hook)
+    ;; Perform the initial parse of the buffer
+    (x509-certificate-parse))
+
+  (provide 'x509-certificate-mode)
+#+END_SRC
+
+And that's it, not much to it. From this point forward I will look at parsed certificates in Emacs by default. This makes me ridiculously happy.
