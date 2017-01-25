@@ -1,0 +1,37 @@
+Every time I export the blog from Org-mode to HTML, I need to go through new entries and add the YAML header that Jekyll (this blog's site generator) uses. I'm tired of doing that, so it's time to automate it.
+
+First we add the symbol for our not-yet-defined function to the property list that defines this Org project. A property list is a flat list of the form =(:param1 value1 ... :paramN valueN)=.
+
+#+BEGIN_SRC emacs-lisp
+  ;; List contains (("fasciism" ...)) before proper plist begins.
+  ;; cdar = (cdr (car ...)), removing first element of list.
+  (plist-put (cdar org-publish-project-alist)
+             :completion-function
+             'mak::fasciism-project-export-completion)
+#+END_SRC
+
+This method for accessing =org-publish-project-alist= depends on the blog being the first project. While a terrible way to do things, it'll work since Emacs loads these blog entries in sequence so that later additions to my Org projects won't cause this to fail.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::fasciism-project-export-completion (&rest project)
+    "Ensure the YAML header exists on blog entries."
+    ;; In Org v8, we check a dynamically-scoped variable.
+    ;; In Org v9, we get a parameter passed to us.
+    (unless project
+      (setq project project-plist))
+    (let* ((dir (plist-get project :publishing-directory))
+           (files (directory-files dir t "\\.html$")))
+      ;; For each HTML file.
+      (dolist (file files)
+        ;; Create a temporary buffer tied to the HTML file.
+        (with-temp-file file
+         (insert-file-contents file)
+           ;; Check for YAML header, inserting if absent.
+           (unless (equal (buffer-substring 1 5) "---\n")
+             (insert "---\n"
+                     "layout: post\n"
+                     "---\n"
+                     "\n"))))))
+#+END_SRC
+
+While most of the functions used above will be recognizable to your average programmer, I want to take a moment to discuss =let*=. We've used =let= before when we needed to create temporary variables, so why do I use =let*= here? It's because =let*= allows me to create a variable that references the value assigned to a previous variable in the same assignment list. Specifically, we define =dir=, and then we use =dir= in the definition of =files=. We could have made the definition of =files= longer, but I prefer this method of breaking it up into smaller assignments that accrete.
