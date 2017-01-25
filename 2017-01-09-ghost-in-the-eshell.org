@@ -50,8 +50,7 @@ The end result of this is that we've configured Emacs to always display the ghos
 Eshell has special behaviour when you have the point after the prompt, honouring input as commands, so we need to explain to it how to recognize our newly-customized prompt.
 
 #+BEGIN_SRC emacs-lisp
-  (setq eshell-prompt-regex
-        (lambda () (format "^%s " (mak::ghost-or-percent))))
+  (setq eshell-prompt-regexp (format "^%s " (mak::ghost-or-percent)))
 #+END_SRC
 
 Finally, we'll expand my war on welcome messages into Eshell:
