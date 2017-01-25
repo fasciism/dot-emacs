@@ -1,6 +1,6 @@
 As part of my job, I often have to look at X.509 (SSL/TLS) certificates. I almost never want to see them in their raw state, a blob of unintelligible Base64 or binary. When opening an image in Emacs, the image is displayed in the window by default, and =C-c C-c= toggles between the image and its representation on disk. I want to have the same thing for X.509 certificates.
 
-First we create the most important thing for any node, the hook that facilitates customization.
+First we create the most important thing for any mode, the hook that facilitates customization.
 
 #+BEGIN_SRC emacs-lisp
   (defvar x509-certificate-mode-hook nil)
