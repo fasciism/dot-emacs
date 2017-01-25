@@ -1,9 +1,9 @@
-There are many great choices for the first real customization to make to a stock Emacs configuration, but I've chosen one that to me most represents taking the safety off: simplifying confirmations via =yes-or-no-p=. Lisp has a tradition of using the =p=-suffix to denote predicates, statements which can be either true or false. Emacs's offers excellent built-in help facilities, one of which searches the documentation of symbols (i.e., docstrings) for a pattern. Using this help facility, called =apropos-documentation= (=C-h d yes-or-no-p=), describes the function of interest as:
+There are many great choices for the first real customization to make to a stock Emacs configuration, but I've chosen one that to me most represents taking the safety off: simplifying confirmations via =yes-or-no-p=. Lisp has a tradition of using the =p=-suffix to denote predicates, statements which can be either true or false. Emacs offers excellent built-in help facilities, one of which searches the documentation of symbols (i.e., docstrings) for a pattern. Using this help facility, called =apropos-documentation= (=C-h d yes-or-no-p=), describes the function of interest as:
 
 #+BEGIN_VERSE
   (yes-or-no-p PROMPT)
 
-  Ask user a yes-or-no question. Return t if answer is yes, and nil if the answer is no. PROMPT is the string to display to ask the question. It should end in a space; =yes-or-no-p' adds "(yes or no) " to it.
+  Ask user a yes-or-no question. Return t if answer is yes, and nil if the answer is no. PROMPT is the string to display to ask the question. It should end in a space; `yes-or-no-p' adds "(yes or no) " to it.
 
   The user must confirm the answer with RET, and can edit it until it has been confirmed.
 #+END_VERSE
