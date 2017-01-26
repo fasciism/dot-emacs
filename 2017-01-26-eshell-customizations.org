@@ -1,0 +1,33 @@
+After trying to use Eshell for the month, I've been fine-tuning its behaviour so that I can tolerate it. There's more work to do, but the first step is to create a command that gets the =*eshell*= buffer out of the way, taking me back to whatever I was just doing. In mosts modes =q= is bound to =bury-buffer=, which sends the current buffer to the back of the list of buffers.
+
+#+BEGIN_SRC emacs-lisp
+  (defun eshell/q ()
+    "Send the *eshell* buffer to the back of buffer list."
+    (bury-buffer))
+#+END_SRC
+
+I've also found that I'd much rather use Dired instead of Eshell for many tasks. At the same time, it's convenient to be able to quickly switch between the two, so here we add a binding to the =e= key in Dired and add the =d= command in Eshell.
+
+#+BEGIN_SRC emacs-lisp
+  (defun eshell/d ()
+    "Open a dired instance of the current working directory."
+    (dired "."))
+
+  (require 'dired)
+  (define-key dired-mode-map "e"
+    ;; Force the creation of a new Eshell instance at this path.
+    (lambda ()
+      (interactive)
+      (eshell t)))
+#+END_SRC
+
+Forcing a creation of a new Eshell ensures it has the same directory as Dired.
+
+Finally, now that I have started using the =~/.emacs.p= directory for all of my private files I want Eshell's files to be stored there. I also increased =eshell-history-size= to a ridiculous number. If that gets ungainly in the future, I'll reduce it.
+
+#+BEGIN_SRC emacs-lisp
+  (setq eshell-history-size 100000
+        eshell-aliases-file "~/.emacs.p/eshell/aliases"
+        eshell-history-file-name "~/.emacs.p/eshell/history"
+        eshell-last-dir-ring-file-name "~/.emacs.p/eshell/lastdir")
+#+END_SRC
