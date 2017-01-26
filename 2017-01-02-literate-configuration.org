@@ -1,0 +1,50 @@
+The first file that Emacs runs when it loads is =~/.emacs.d/init.el=. This file is written using [[https://en.wikipedia.org/wiki/Emacs_Lisp][Emacs Lisp (elisp)]]. It is important to get one thing clear in your head: Emacs is just a Lisp runtime. This means that while Emacs is primarily considered a text editor, that's just its user interface, not its application.
+
+The init file that I'm using right now takes every various files with the =.org= extension and converts them to the correspondingly named =.el= file, and then evaluates the files altering the Emacs active session. Comments are prefixed with [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Comment-Tips.html][varying numbers of semicolons]]. In classic Unix fashion, [[https://en.wikipedia.org/wiki/Lions%2527_Commentary_on_UNIX_6th_Edition,_with_Source_Code#.22You_are_not_expected_to_understand_this.22][you are not expected to understand this]].
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  ;;; init.el --- Where all the magic begins
+  ;;
+  ;; Originally from:
+  ;;     http://orgmode.org/worg/org-contrib/babel/intro.html#literate-emacs-init
+  ;;
+  ;; This file loads Org-mode and then loads the rest of our Emacs initialization
+  ;; from Emacs lisp embedded in literate Org-mode files.
+
+  ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode
+  ;; files.
+
+  (defun mak::load-literate-config (dir &optional regex)
+    "Load and evaluate the files in dir matching regex, except blacklisted files."
+    (unless regex
+      (setq regex ""))
+    (dolist (org (directory-files dir t (concat regex ".*\\.org$")))
+      (org-babel-load-file org)))
+
+  (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+
+  (let* ((org-dir (expand-file-name "lisp"
+          (expand-file-name "org"
+           (expand-file-name "src"
+            dotfiles-dir))))
+         (org-contrib-dir (expand-file-name "lisp"
+          (expand-file-name "contrib"
+           (expand-file-name ".."
+            org-dir))))
+         (load-path (append (list org-dir org-contrib-dir)
+                            (or load-path nil))))
+    ;; Load up Org-mode and Org-babel.
+    (require 'org-install)
+    (require 'ob-tangle))
+
+  ;; Load up all literate org-mode files matching the regex in each directory.
+  (mak::load-literate-config "~/.emacs.d" "\[0-9\]\\{4\\}-\[0-9\]\\{2\\}-\[0-9\]\\{2\\}-")
+  (mak::load-literate-config "~/.emacs.d/drafts" "YYYY-MM-DD-")
+  (mak::load-literate-config "~/.emacs.p")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :exports none
+  ;;; This block exists solely to prevent errors.
+#+END_SRC
+
+I have edited the bottom of the file to only import my blog posts, both published and unscheduled drafts, and my private configuration files.

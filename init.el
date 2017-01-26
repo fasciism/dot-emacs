@@ -15,27 +15,33 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
+(defun mak::load-literate-config (dir &optional regex)
+  "Load and evaluate the files in dir matching regex, except blacklisted files."
+  (unless regex
+    (setq regex ""))
+  (dolist (org (directory-files dir t (concat regex ".*\\.org$")))
+    (org-babel-load-file org)))
+
 (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
 
-(let* ((org-dir (expand-file-name
-		 "lisp" (expand-file-name
-			 "org" (expand-file-name
-				"src" dotfiles-dir))))
-       (org-contrib-dir (expand-file-name
-			 "lisp" (expand-file-name
-				 "contrib" (expand-file-name
-					    ".." org-dir))))
+(let* ((org-dir (expand-file-name "lisp"
+        (expand-file-name "org"
+         (expand-file-name "src"
+          dotfiles-dir))))
+       (org-contrib-dir (expand-file-name "lisp"
+        (expand-file-name "contrib"
+         (expand-file-name ".."
+          org-dir))))
        (load-path (append (list org-dir org-contrib-dir)
-			  (or load-path nil))))
+                          (or load-path nil))))
   ;; Load up Org-mode and Org-babel.
   (require 'org-install)
   (require 'ob-tangle))
 
-;; Load up all literate org-mode files in this directory.
-(mapc #'org-babel-load-file (directory-files "~/.emacs.d" t "\[0-9\]\\{4\\}-\[0-9\]\\{2\\}-\[0-9\]\\{2\\}-.*\\.org$"))
-(mapc #'org-babel-load-file (directory-files "~/.emacs.d/buffer" t "\[0-9\]\\{4\\}-\[0-9\]\\{2\\}-\[0-9\]\\{2\\}-.*\\.org$"))
-(mapc #'org-babel-load-file (directory-files "~/.emacs.d/drafts" t "YYYY-MM-DD-.*\\.org$"))
-(mapc #'org-babel-load-file (directory-files "~/.emacs.p" t "\\.org$"))
+;; Load up all literate org-mode files matching the regex in each directory.
+(mak::load-literate-config "~/.emacs.d" "\[0-9\]\\{4\\}-\[0-9\]\\{2\\}-\[0-9\]\\{2\\}-")
+(mak::load-literate-config "~/.emacs.d/drafts" "YYYY-MM-DD-")
+(mak::load-literate-config "~/.emacs.p")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -51,7 +57,7 @@
  '(org-src-fontify-natively t)
  '(package-selected-packages
    (quote
-    (ace-window helm bbdb beacon htmlize elfeed guide-key browse-kill-ring undo-tree avy powerline solarized-theme use-package))))
+    (yasnippet ace-window helm bbdb beacon htmlize elfeed guide-key browse-kill-ring undo-tree avy powerline solarized-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
