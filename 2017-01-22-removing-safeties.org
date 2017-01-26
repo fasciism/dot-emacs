@@ -2,24 +2,25 @@ This blog is not focused on the specifics of Emacs lisp, but as we use new conce
 
 Let's fool around with this a bit. First we make a function, and disable it.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (defun mak::test-disabling ()
     "XXX-MAK: DEMO FUNCTION"
     (interactive)
     (message "Disabled: %s"
              (get 'mak::test-disabling 'disabled)))
+
   (put 'mak::test-disabling 'disabled "This function has been disabled as a demonstration.")
 #+END_SRC
 
 Now let's run the function non-interactively, by calling it from elisp as opposed to a =M-x= or a keybinding, and see what happens.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (mak::test-disabling)
 #+END_SRC
 
 This prints the message =Disabled: This function has been disabled as a demonstration.= as expected. Next we'll bind it to a key, only inside the current buffer for safety, and then trigger the key to see what happens.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (local-set-key (kbd "C-M-D") 'mak::test-disabling)
 #+END_SRC
 
@@ -29,7 +30,7 @@ This results in the following buffer being displayed:
 
 Once I enter =y=, the function executes and displays =Disabled: nil=. Now that we have a good handle on this, let's clean up the mess we just made:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (fmakunbound 'mak::test-disabling)
   (local-unset-key (kbd "C-M-D"))
 #+END_SRC
