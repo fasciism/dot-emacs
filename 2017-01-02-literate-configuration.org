@@ -37,6 +37,10 @@ The init file that I'm using right now takes every various files with the =.org=
     (require 'org-install)
     (require 'ob-tangle))
 
+  ;; Load the customization variables from another file.
+  (setq custom-file "~/.emacs.p/custom.el")
+  (load custom-file 'noerror)
+
   ;; Load up all literate org-mode files matching the regex in each directory.
   (mak::load-literate-config "~/.emacs.d" "\[0-9\]\\{4\\}-\[0-9\]\\{2\\}-\[0-9\]\\{2\\}-")
   (mak::load-literate-config "~/.emacs.d/drafts" "YYYY-MM-DD-")

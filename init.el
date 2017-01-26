@@ -38,29 +38,11 @@
   (require 'org-install)
   (require 'ob-tangle))
 
+;; Load the customization variables from another file.
+(setq custom-file "~/.emacs.p/custom.el")
+(load custom-file 'noerror)
+
 ;; Load up all literate org-mode files matching the regex in each directory.
 (mak::load-literate-config "~/.emacs.d" "\[0-9\]\\{4\\}-\[0-9\]\\{2\\}-\[0-9\]\\{2\\}-")
 (mak::load-literate-config "~/.emacs.d/drafts" "YYYY-MM-DD-")
 (mak::load-literate-config "~/.emacs.p")
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
- '(org-agenda-files (quote ("~/obs/openstack.org" "~/org/test.org")))
- '(org-hide-emphasis-markers t)
- '(org-hide-leading-stars t)
- '(org-src-fontify-natively t)
- '(package-selected-packages
-   (quote
-    (yasnippet ace-window helm bbdb beacon htmlize elfeed guide-key browse-kill-ring undo-tree avy powerline solarized-theme use-package))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
