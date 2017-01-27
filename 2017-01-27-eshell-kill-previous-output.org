@@ -1,0 +1,40 @@
+One thing that I do frequently is run a command that produces a lot of output, often =curl= or =nmap=, which I would rather not run again. This means that instead or re-running the command and redirecting the output to the kill ring or clipboard, I have to carefully select the output from the buffer and then =M-w=  (=kill-ring-save=) it. That's more effort than I'd like, so I made a function to select the previous command's output and add it to the kill ring:
+
+#+BEGIN_SRC emacs-lisp
+  (defun eshell/kill-previous-output (&optional nth)
+    "Copies the output of the previous command to the kill ring.
+  When nth is set, it will copy the nth previous command."
+    (save-excursion
+      ;; Move to the end of the eshell buffer.
+      (goto-char (point-max))
+      ;; Move to the start of the last prompt.
+      (search-backward-regexp eshell-prompt-regexp nil nil nth)
+      ;; Move to the start of the line, before the prompt.
+      (beginning-of-line)
+      ;; Remember this position as the end of the region.
+      (let ((end (point)))
+        ;; Move to the start of the last prompt.
+        (search-backward-regexp eshell-prompt-regexp)
+        ;; Move one line below the prompt, where the output begins.
+        (next-line)
+        ;; Find first line that's not blank.
+        (while (looking-at "^[[:space:]]*$")
+          (beginning-of-line)
+          (next-line))
+        ;; Copy region to kill ring.
+        (copy-region-as-kill (point) end)
+        ;; Output stats on what was copied as a sanity check.
+        (format "Copied %s words to kill ring." (count-words-region (point) end)))))
+#+END_SRC
+
+This function doesn't use Eshell's builtin functions, because they break in the common case of the previous command containing a newline. Here's why:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun eshell-next-prompt (n)
+    "Move to end of Nth next prompt in the buffer."
+    (interactive "p")
+    (forward-paragraph n)
+    (eshell-skip-prompt))
+#+END_SRC
+
+As you can see, the call to =forward-paragraph= messes things up for my use case.
