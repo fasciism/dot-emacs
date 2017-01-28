@@ -1,0 +1,8 @@
+Just a minor configuration change today. I've noticed that when I trigger URLs in Emacs in various modes my web browser doesn't pop up properly. I've looked at a few options for fixing this, and the most straightforward one is this:
+
+#+BEGIN_SRC emacs-lisp
+  (setq browse-url-browser-function 'browse-url-generic
+        browse-url-generic-program "firefox")
+#+END_SRC
+
+That is all. Good day to you.
