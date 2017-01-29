@@ -1,0 +1,129 @@
+Continuing my love of semi-nonsensical blog entry titles only tangentially related to the topic in any way...
+
+I have some boxes at work that I need to log into frequently. Now that I'm trying to use Eshell instead of =xterm=, I need to set up Tramp properly. Tramp is an Emacs mode that abstracts the connection to another machine in such a way that editing files, running remote commands, and navigating remote directories with Dired all work.
+
+The first thing I needed to do to make Tramp work was to add the following line to the top of my =~/.zshrc=. This line checks for terminals that are 'dumb', meaning they lack advanced features or are likely not normal terminal emulators, and if so: disables Zsh's line-editing facilities, sets the prompt to a traditional style, and stops processing the remainder of the configuration file.
+
+#+BEGIN_EXAMPLE
+  #######################################################
+  # Emacs Tramp
+  #######################################################
+  [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
+#+END_EXAMPLE
+
+Once the above line is in place, Eshell immediately works:
+
+#+BEGIN_EXAMPLE
+  👻 cd /ssh:stormy:
+  👻 pwd
+  /ssh:stormy:/home/fasciism
+  👻 cat ../../etc/motd
+   _____ _
+  /  ___| |
+  \ `--.| |_ ___  _ __ _ __ ___  _   _
+   `--. | __/ _ \| '__| '_ ` _ \| | | |
+  /\__/ | || (_) | |  | | | | | | |_| |
+  \____/ \__\___/|_|  |_| |_| |_|\__, |
+                                  __/ |
+  Stormageddon: Dark Lord of All |___/
+  https://www.youtube.com/watch?v=bWK61bkQ-ME
+#+END_EXAMPLE
+
+Eshell and Tramp ignore all the login banners and message-of-the-day (MOTD) information from the remote system. From this point on, you can execute commands on the remote system since you are effectively SSH'd into it:
+
+#+BEGIN_EXAMPLE
+  👻 hostname
+  stormy
+  👻 cat /etc/hostname
+  aboyne
+#+END_EXAMPLE
+
+It's important to know that absolute paths still refer to the system on which Emacs resides, while relative paths refer to the current working directory of Eshell (i.e., the remote host). If I attempt to run =find-file= on the remote machine to edit the MOTD, the buffer will be marked as read-only
+
+#+BEGIN_EXAMPLE
+  👻 find-file ../../etc/motd
+  #<buffer motd>
+  👻 (with-current-buffer "motd" buffer-read-only)
+  t
+#+END_EXAMPLE
+
+Thankfully, Tramp also supports elevating our privilege via =sudo= on local and remote hosts. The downside is that this operation requires a horrific syntax. Using =sudo ffap= isn't an option either, since =sudo= opens a new shell on the remote machine through which Emacs has no special relationship.
+
+#+BEGIN_EXAMPLE
+  👻 sudo find-file ../../etc/motd
+  [sudo] password for fasciism: [redacted[
+  sudo: find-file: command not found
+#+END_EXAMPLE
+
+However, using Tramp's =sudo= syntax and multi-hop capabilities, we can use =C-x C-f /ssh:stormy|sudo:stormy:/etc/motd=, type in the password, and start editing the MOTD in Emacs, resulting in:
+
+#+BEGIN_EXAMPLE
+  👻 cat ../../etc/motd
+   _____ _
+  /  ___| |
+  \ `--.| |_ ___  _ __ _ __ ___  _   _
+   `--. | __/ _ \| '__| '_ ` _ \| | | |
+  /\__/ | || (_) | |  | | | | | | |_| |
+  \____/ \__\___/|_|  |_| |_| |_|\__, |
+                                  __/ |
+  SUDO VIA TRAMP APPEARS TO WORK |___/
+  https://www.youtube.com/watch?v=bWK61bkQ-ME
+#+END_EXAMPLE
+
+Since this syntax is so ungainly, I've decided to make two emacs functions =f= (an alias for =find-file=) and =f!= which tries to edit the file using sudo (locally or remote).
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::get-buffer-path (&optional name)
+    "Finds the current path, including for Eshell buffers where it is the working directory."
+    (interactive "b")
+    (with-current-buffer name
+      (if (eq major-mode 'eshell-mode)
+          (substring-no-properties default-directory)
+        (buffer-file-name))))
+
+  (defun mak::get-buffer-tramp-context (&optional name)
+    "Finds a buffer's Tramp context based on its file name."
+    (interactive "b")
+    (let ((path (mak::get-buffer-path name)))
+      ;; Match single and chained contexts.
+      (if (string-match "^\\(/\\(ssh\\|sudo\\):[^:|]+\\(|\\(ssh\\|sudo\\):[^:|]+\\)*:\\)" path)
+          (match-string 1 path)
+        (user-error "Failed to find Tramp context in path %s." path))))
+
+  (defun mak::get-last-hop-from-tramp-context (ctx)
+    "Finds the last host or user@host hop in a Tramp context."
+    (if (string-match "[/:]\\(?:ssh\\|sudo\\):\\([^:]+\\):$" ctx)
+        (match-string 1 ctx)
+        (user-error "Failed to find last hop in context %s." ctx)))
+
+  (defun mak::tramp-remote-find-file-with-sudo (file)
+    "Attempts to open a file using Tramp and Sudo."
+    ;; We need to currently be within a Tramp 'context'.
+    (let* ((ctx (mak::get-buffer-tramp-context (current-buffer)))
+           (hop (mak::get-last-hop-from-tramp-context ctx)))
+      (find-file (format "%s|sudo:%s:%s"
+                         (substring ctx 0 -1)
+                         hop
+                         file))))
+
+  (defun eshell/f (file)
+    "An alias for find-file."
+    (find-file file))
+
+  (defun eshell/f! (file)
+    "An alias for find-file-with-sudo."
+    (if (equal "/" (substring file 0 1))
+        (find-file (concat "/sudo::" file))
+      (mak::tramp-remote-find-file-with-sudo file)))
+#+END_SRC
+
+And with this we now have an easy way to edit either local (absolute) or remote (relative) files with much less typing.
+
+#+BEGIN_EXAMPLE
+  👻 f! /etc/motd
+  #<buffer motd::>
+  👻 f! ../../etc/motd
+  #<buffer motd::/ssh:stormy:>
+#+END_EXAMPLE
+
+While the determination of whether to access the local or remote file isn't ideal, it's not bad for a couple hours of work. I can always touch up the logic in a future entry.
