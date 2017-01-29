@@ -27,7 +27,5 @@ Finally, now that I have started using the =~/.emacs.p= directory for all of my 
 
 #+BEGIN_SRC emacs-lisp
   (setq eshell-history-size 100000
-        eshell-aliases-file "~/.emacs.p/eshell/aliases"
-        eshell-history-file-name "~/.emacs.p/eshell/history"
-        eshell-last-dir-ring-file-name "~/.emacs.p/eshell/lastdir")
+        eshell-directory-name "~/.emacs.p/eshell")
 #+END_SRC
