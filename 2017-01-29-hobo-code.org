@@ -51,7 +51,7 @@ Thankfully, Tramp also supports elevating our privilege via =sudo= on local and 
 
 #+BEGIN_EXAMPLE
   👻 sudo find-file ../../etc/motd
-  [sudo] password for fasciism: [redacted[
+  [sudo] password for fasciism: [redacted]
   sudo: find-file: command not found
 #+END_EXAMPLE
 
