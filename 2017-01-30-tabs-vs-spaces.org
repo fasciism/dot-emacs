@@ -1,0 +1,11 @@
+I love a good holy war, one in which neither side can ever be right so it gives us something to argue about forever. I find that delightful. Today I'm going to fix something that has been driving me bonkers all month as I write lots of Elisp code: tabs as indentation.
+
+In the tabs vs. spaces war, I'm strictly a fence-sitter. I use both for different languages, but the use of tabs for a language with complex indentation like Elisp is madness. Let's start by disabling tabs as indentation globally.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+We need to use =setq-default= because =indent-tabs-mode='s help notes that its value becomes buffer-local once set.
+
+For a few programming languages that have relatively simple formatting (C, C++, and Java), I prefer tabs. But I haven't programmed in any of those languages recently, so we can deal with them another day.
