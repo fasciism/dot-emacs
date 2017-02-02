@@ -1,0 +1,17 @@
+As you might have guessed, writing my Emacs configuration in this style leads me to need to reload the system often to ensure that things are in the correct order as I make new drafts and go back to fix mistakes. So far I have been handling this by manually calling =M-x kill-emacs= and running the program anew. Now that we have packages available, [[https://github.com/iqbalansari/restart-emacs][restart-emacs]] gives us a better way:
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::restart-emacs-or-release-file ()
+    (interactive)
+    (if server-buffer-clients
+        (server-edit)
+      (when (y-or-n-p "Restart Emacs? ")
+        (restart-emacs '("--debug-init")))))
+
+  (use-package restart-emacs
+    :ensure t
+    :pin melpa-stable
+    :bind ("C-x C-c" . mak::restart-emacs-or-release-file))
+#+END_SRC
+
+On [[http://fasciism.com/2017/01/03/simplified-confirmations/][Day 3]] we changed confirmations to =y-or-n-p=, and on [[http://fasciism.com/2017/01/04/no-escape/][Day 4]] we removed the keybinding that exited Emacs. Now we change our setup to ensure that if we hit =C-x C-c= Emacs will restart itself, unless it is within a buffer (and frame for my configuration) created by emacsclient, in which case it will return from emacsclient.
