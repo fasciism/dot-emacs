@@ -1,0 +1,9 @@
+For a couple of weeks now I've actually had Htmlize installed in my Emacs. The reason for this is that it automatically enables Org-mode's export functions to add syntax highlighting to code blocks. You may have noticed that the blog got slightly less ugly in the recent past, this is why.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package htmlize
+    :ensure t
+    :pin melpa-stable)
+#+END_SRC
+
+The above call to =use-package= installs the Htmlize package if it's missing, and forces the use of MELPA Stable as its repository. As mentioned earlier, I try to stick to stable packages whenever possible. Emacs is 'mission critical' to my life, so I can't afford the time and frustration caused by unstable packages. =use-package= has many more, interesting options that we will use in the coming days.
