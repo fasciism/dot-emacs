@@ -14,7 +14,7 @@ I have been in love with the [[http://ethanschoonover.com/solarized][Solarized]]
            (load-theme 'solarized-dark)))
 #+END_SRC
 
-First, an explanation of the reason I load the light and then the dark version of Solarized. I do this so that both themes are 'approved' by Emacs, meaning that in =~/.emacs.p/custom.el= -- where I store my Customization settings, see Day 1 -- the hashes for the themes are stored as follows:
+First, an explanation of the reason I load the light and then the dark version of Solarized. I do this so that both themes are 'approved' by Emacs, meaning that in =~/.emacs.p/custom.el= -- where I store my Customization settings, see [[http://fasciism.com/2017/01/02/literate-configuration/][Day 2]] -- the hashes for the themes are stored as follows:
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (custom-set-variables
