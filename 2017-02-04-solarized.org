@@ -1,0 +1,26 @@
+I have been in love with the [[http://ethanschoonover.com/solarized][Solarized]] colour scheme(s) since I first laid eyes on them. Before I found Solarized, I would always opt for harsh, high-contrast colour schemes consisting solely of bright colours on black backgrounds. What I like about Solarized is that it claims to be non-arbitrary. Most colour schemes have the feel that everything was picked because the author just liked the look of it. Solarized appears to have some method, though not one which I can understand. So, in summary, SCIENCE!
+
+#+BEGIN_SRC emacs-lisp
+  (use-package solarized-theme
+    :ensure t
+    :pin melpa-stable
+    :init
+    (setq solarized-distinct-fringe-background t
+          solarized-use-variable-pitch nil
+          solarized-high-contrast-mode-line t
+          x-underline-at-descent-line t)
+    :config
+    (progn (load-theme 'solarized-light)
+           (load-theme 'solarized-dark)))
+#+END_SRC
+
+First, an explanation of the reason I load the light and then the dark version of Solarized. I do this so that both themes are 'approved' by Emacs, meaning that in =~/.emacs.p/custom.el= -- where I store my Customization settings, see Day 1 -- the hashes for the themes are stored as follows:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(custom-set-variables
+ '(custom-safe-themes
+   (quote
+    ("<hash-for-solarized-light>" "<hash-for-solarized-dark>" default))))
+#+END_SRC
+
+This means that whenever I choose to switch between the two versions of the theme, due to the lighting in the environment or the content of a buffer, I needn't worry about warning dialogs. The rest of the settings ensure that Solarized doesn't visually affect other aspects of the Emacs instance.
