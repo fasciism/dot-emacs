@@ -1,0 +1,15 @@
+For all of the minor modes that I use, I enable them globally. This may change in the future, as can anything, but for now I have no need to know which minor modes are enabled, because the answer is "All the ones I like." Diminish is a package that allows the replacement or omission of mode names in the mode line.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish
+    :ensure t
+    :pin melpa-stable
+    :config
+    (progn
+     ;; Diminish built-in modes we've already enabled.
+     (diminish 'flyspell-mode)
+     (diminish 'visual-line-mode)
+     (diminish 'whitespace-mode)))
+#+END_SRC
+
+Since we have not yet installed any new minor modes, we will diminish only those which are part of the base system. In future entries we will use =:diminish= in =use-package= to include packages in the list that Diminish affects.
