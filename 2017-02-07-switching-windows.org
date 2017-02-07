@@ -1,0 +1,16 @@
+Emacs frequently has more than one window open, and =C-x o= can be used to switch between them. =C-x o= is far less useful when you have three or more windows open, since you need to use it multiple times to reach the desired window. The Ace-Window package improves this situation by allowing you to navigate directly to a window.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :pin elpa
+    :diminish
+    :bind ("M-o" . ace-window)
+    :config
+    (setq aw-keys '(?e ?t ?u ?h ?o ?n ?i ?d)))
+#+END_SRC
+
+I've bound the keys for different windows based on the [[https://en.wikipedia.org/wiki/Dvorak_Simplified_Keyboard][Dvorak keyboard layout]] that I use with my Kinesis Advantage keyboard, prioritizing the strongest fingers. The effect of this package can be seen below:
+
+
+[[http://fasciism.com/img/2017-02-07-switching-windows.png]]
