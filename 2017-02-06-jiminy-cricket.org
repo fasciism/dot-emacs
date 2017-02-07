@@ -1,0 +1,19 @@
+Emacs keybindings are not simple. But they are discoverable and memorable, once you get past the initial shock at least. The Guide-Key package helps with that by popping up a new window displaying a list of keys available at the current moment.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package guide-key
+    :ensure t
+    :pin melpa-stable
+    :diminish guide-key-mode
+    :init
+    (setq guide-key/guide-key-sequence
+          '("C-c" "C-x r" "C-x 4" "C-x 5" "C-x 8"))
+    :config
+    (guide-key-mode 1))
+#+END_SRC
+
+For instance, while writing this blog I can press =C-x r= and receive a list of possibilities shown below:
+
+[[http://fasciism.com/img/2017-02-06-jiminy-cricket.png]]
+
+You'll notice that we used the =:diminish= option above, with the name of the minor mode as its value. That indicates that Diminish should omit the minor mode from the mode line entirely. Alternatively, I could have offered an abbreviation such as =GK=.
