@@ -1,0 +1,24 @@
+No, I couldn't just call this post "Helm". The terrible title I chose called to me, and so I acquiesced.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :pin melpa-stable
+    :diminish helm-mode
+    :bind (("M-x" . helm-M-x)
+           ("C-x C-f" . helm-find-files))
+    :init (setq helm-mode-fuzzy-match t)
+    :config (progn
+              (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+              (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+              (helm-mode 1)))
+#+END_SRC
+
+We've done three things in the =:config= section, let's take a moment to discuss each.
+
+We've bound =<tab>= (=C-i= in a terminal) to the command that (usually) expands a candidate in a list of possible completions. Normally the key for this is =C-j=, but =<tab>= is traditional and I don't feel that using a different binding adds any value.
+
+Fuzzy matching has been enabled, which requires more processing of a list of candidates, but I have used this feature in the past and appreciated it. To explain be example, I can type =C-h v hmfm= looking for =helm-mode-fuzzy-match= and the list of candidates will include every variable that matches the regex =.*h.*m.*f.*m.*=, which is a lot of candidates. As always, if this annoys me later I can disable it effortlessly.
+
+
+When I initially installed Helm, I limited its use to =M-x=, but found that I enjoyed it a great deal. I have used Interactive Do (Ido) in earlier times, but I like Helm better. There's also Ivy which is the new kid on the block, but until Helm pisses me off someday it has my (fickle) loyalty.
