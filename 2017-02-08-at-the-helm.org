@@ -1,4 +1,10 @@
-No, I couldn't just call this post "Helm". The terrible title I chose called to me, and so I acquiesced.
+No, I couldn't just call this post "Helm". The terrible title I chose called to me, and so I acquiesced. Helm is the most invasive package I've installed thus far. It replaces the majority of commands where user input is expected (e.g., =C-x b=, =C-x C-f=, =C-x k=, =M-x=) with its own version. Helms commands offer lists of candidates, shown in a pop-up window, which can be filtered, navigated, and selected. This is far more powerful than the default commands, and I find it useful.
+
+An instance of =C-x C-f= (=helm-find-files=) appears as follows:
+
+[[http://fasciism.com/img/2017-02-08-at-the-helm.png]]
+
+Now let's get that package in the system.
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm
@@ -19,6 +25,5 @@ We've done three things in the =:config= section, let's take a moment to discuss
 We've bound =<tab>= (=C-i= in a terminal) to the command that (usually) expands a candidate in a list of possible completions. Normally the key for this is =C-j=, but =<tab>= is traditional and I don't feel that using a different binding adds any value.
 
 Fuzzy matching has been enabled, which requires more processing of a list of candidates, but I have used this feature in the past and appreciated it. To explain be example, I can type =C-h v hmfm= looking for =helm-mode-fuzzy-match= and the list of candidates will include every variable that matches the regex =.*h.*m.*f.*m.*=, which is a lot of candidates. As always, if this annoys me later I can disable it effortlessly.
-
 
 When I initially installed Helm, I limited its use to =M-x=, but found that I enjoyed it a great deal. I have used Interactive Do (Ido) in earlier times, but I like Helm better. There's also Ivy which is the new kid on the block, but until Helm pisses me off someday it has my (fickle) loyalty.
