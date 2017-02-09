@@ -94,7 +94,7 @@ With the transformation functions in place, we would like a keybinding to easily
 Calling modes manually via =M-x= is a pain, so we add likely extensions to a list that maps them to our new major mode. Certificates often have wacky extensions, though, so we also provide a regular expression to match text at the beginning of the buffer.
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.\\(der\\|crt\\|pem\\)\\'" . x509-certificate-mode))
+  (add-to-list 'auto-mode-alist '("\\.\\(der\\|crt\\|pem\\)$" . x509-certificate-mode))
   (add-to-list 'magic-mode-alist '("-----BEGIN CERTIFICATE-----" . x509-certificate-mode))
 #+END_SRC
 
