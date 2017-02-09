@@ -1,0 +1,18 @@
+An unscheduled dive into the world of [[https://nmap.org/book/nse.html][Nmap Scripting]] last night has caused me to need Emacs to be configured to handle Lua code. As usual, packages are there to make life better:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package lua-mode
+    :ensure t
+    :pin melpa-stable
+    :config
+    (progn
+      (add-hook 'lua-mode-hook (lambda ()
+                                 (setq lua-indent-level 2
+                                       lua-documentation-url "http://www.lua.org/manual/5.3/manual.html"
+                                       lua-default-application "lua5.3")))
+      (add-to-list 'auto-mode-alist '("\\.nse$" . lua-mode))))
+#+END_SRC
+
+The default indentation in Lua mode is 3 spaces, which seems insane to me, and needs to be 2 spaces to match every bit of Lua I've ever seen. The default documentation is for version 5.1, and the default interpreter on my system is version 5.2, but Nmap embeds version 5.3. The documentation URL allows me to use =C-c C-f= on a function or keyword to open its documentation in the browser. Finally, Nmap uses a non-standard file extension, =.nse= for Nmap Scripting Engine, which we need to make Emacs aware of.
+
+The results of last night's Nmap programming can be found [[https://github.com/nmap/nmap/pull/686][here]], if you're interested.
