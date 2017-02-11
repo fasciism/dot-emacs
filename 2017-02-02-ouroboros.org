@@ -11,7 +11,8 @@ As you might have guessed, writing my Emacs configuration in this style leads me
   (use-package restart-emacs
     :ensure t
     :pin melpa-stable
-    :bind ("C-x C-c" . mak::restart-emacs-or-release-file))
+    :bind
+    ("C-x C-c" . mak::restart-emacs-or-release-file))
 #+END_SRC
 
 On [[http://fasciism.com/2017/01/03/simplified-confirmations/][Day 3]] we changed confirmations to =y-or-n-p=, and on [[http://fasciism.com/2017/01/04/no-escape/][Day 4]] we removed the keybinding that exited Emacs. Now we change our setup to ensure that if we hit =C-x C-c= Emacs will restart itself, unless it is within a buffer (and frame for my configuration) created by emacsclient, in which case it will return from emacsclient.

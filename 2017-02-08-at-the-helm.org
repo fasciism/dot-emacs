@@ -11,13 +11,15 @@ Now let's get that package in the system.
     :ensure t
     :pin melpa-stable
     :diminish helm-mode
-    :bind (("M-x" . helm-M-x)
-           ("C-x C-f" . helm-find-files))
-    :init (setq helm-mode-fuzzy-match t)
-    :config (progn
-              (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-              (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-              (helm-mode 1)))
+    :bind
+    ("M-x" . helm-M-x)
+    ("C-x C-f" . helm-find-files)
+    :init
+    (setq helm-mode-fuzzy-match t)
+    :config
+    (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+    (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+    (helm-mode 1))
 #+END_SRC
 
 We've done three things in the =:config= section, let's take a moment to discuss each.

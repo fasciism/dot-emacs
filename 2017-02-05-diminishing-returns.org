@@ -5,11 +5,10 @@ For all of the minor modes that I use, I enable them globally. This may change i
     :ensure t
     :pin melpa-stable
     :config
-    (progn
-     ;; Diminish built-in modes we've already enabled.
-     (diminish 'flyspell-mode)
-     (diminish 'visual-line-mode)
-     (diminish 'whitespace-mode)))
+    ;; Diminish built-in modes we've already enabled.
+    (diminish 'flyspell-mode)
+    (diminish 'visual-line-mode)
+    (diminish 'whitespace-mode))
 #+END_SRC
 
 Since we have not yet installed any new minor modes, we will diminish only those which are part of the base system. In future entries we will use =:diminish= in =use-package= to include packages in the list that Diminish affects.

@@ -2,10 +2,11 @@ I've been holding off on adding packages to my configuration until I had been at
 
 #+BEGIN_SRC emacs-lisp
   (require 'package)
-  (setq package-archives '(("melpa-stable" . "https://stable.melpa.org/packages/")
-                           ("marmalade" . "http://marmalade-repo.org/packages/")
-                           ("melpa" . "https://melpa.org/packages/")
-                           ("elpa" . "https://elpa.gnu.org/packages/")))
+  (setq package-archives
+        '(("melpa-stable" . "https://stable.melpa.org/packages/")
+          ("marmalade" . "http://marmalade-repo.org/packages/")
+          ("melpa" . "https://melpa.org/packages/")
+          ("elpa" . "https://elpa.gnu.org/packages/")))
   (setq package-enable-at-startup nil)
   (package-initialize)
 #+END_SRC

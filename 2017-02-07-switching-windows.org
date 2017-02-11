@@ -5,7 +5,8 @@ Emacs frequently has more than one window open, and =C-x o= can be used to switc
     :ensure t
     :pin elpa
     :diminish
-    :bind ("M-o" . ace-window)
+    :bind
+    ("M-o" . ace-window)
     :config
     (setq aw-keys '(?e ?t ?u ?h ?o ?n ?i ?d)))
 #+END_SRC
