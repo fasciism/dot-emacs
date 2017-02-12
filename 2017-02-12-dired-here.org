@@ -10,4 +10,4 @@ One thing that occurs frequently in my Emacs usage is opening a Dired buffer bas
   (global-set-key (kbd "C-x d") 'mak::dired-here)
 #+END_SRC
 
-While this is an minor change, it is satisfying.
+While this is a minor change, it is satisfying.
