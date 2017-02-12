@@ -1,0 +1,13 @@
+One thing that occurs frequently in my Emacs usage is opening a Dired buffer based on the current context of the file I am in. For example, when editing this file I would like =C-x d= to a Dired buffer representing =~/.emacs.d=, and ensure that the buffer represents the current state of the filesystem. The default is for =C-x d= to require confirmation of the location, and to not refresh the Dired buffer if it already exists.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::dired-here ()
+    "Make an up-to-date Dired buffer for the current location."
+    (interactive)
+    (dired ".")
+    (revert-buffer))
+
+  (global-set-key (kbd "C-x d") 'mak::dired-here)
+#+END_SRC
+
+While this is an minor change, it is satisfying.
