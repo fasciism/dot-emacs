@@ -8,14 +8,14 @@ I previously mentioned that the sources for these blog entries are actually my c
 ;; Set up blog for export as an Org-mode project.
 (setq org-publish-project-alist
       '(("fasciism"
-	:base-directory "~/.emacs.d/"
-	:publishing-directory "~/src/fasciism/_posts/"
-	:base-extension "org"
-	:sub-superscript ""
-	:toc nil
-	:publishing-function org-html-publish-to-html
-	:html-extension "html"
-	:body-only t)))
+        :base-directory "~/.emacs.d/"
+        :publishing-directory "~/src/fasciism/_posts/"
+        :base-extension "org"
+        :sub-superscript ""
+        :toc nil
+        :publishing-function org-html-publish-to-html
+        :html-extension "html"
+        :body-only t)))
 #+END_SRC
 
 First, the =require= lines import the libraries necessary for the export process. I have not configured this process as much as I'd like, causing the blog to be ugly right now. We'll revisit this configuration at a later date by simply over-writing the value of =org-publish-project-alist= in a later blog entry.
