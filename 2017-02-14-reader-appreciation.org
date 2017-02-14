@@ -1,0 +1,28 @@
+Some things can only get done if you stop worrying about whether the results will matter or have actual benefits. This blog and my Master's degree are two such things. For this blog at least, I have had five different readers contact me about various posts in its seven week lifetime. I'm calling that a rousing success!
+
+Today's post is dedicated to the thing that I have received the most comments about: =use-package=. The excellent Use-Package library, featured heavily this month, has a number of features that I have retroactively edited into my blog.
+
+First, Use-Package offers a =:mode= keyword that allows you to bind a mode to a file extension:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package lua-mode
+    :mode "\\.nse$")
+#+END_SRC
+
+This is much more convenient than the alternative:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package lua-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.nse$" . lua-mode)))
+#+END_SRC
+
+Use-Package offers an =:interpreter= keyword which is similar, but applies to the [[https://en.wikipedia.org/wiki/Shebang_(Unix)][shebang]] line as opposed to the file extension. It also uses a macro for both the =:init= and =:config= keywords to allow multiple forms without the use of =progn=. Given that I've already used =progn= in those sections four times this month, that's a great feature, and I've changed earlier posts to take advantage of it.
+
+Another change of note is that I have also gone back and removed the =<tab>= completion binding from Helm. It turns out that using the right arrow key is a better experience for me. I'm still working out whether the actions offered by Helm under the =<tab>= menu are particularly useful for me.
+
+Finally, I just want to say that everyone who has contacted me has been wonderful and helpful. I honestly look forward to future emails/tweets pointing out errors and simplifications in my posts.
+
+#+BEGIN_SRC emacs-lisp :exports none
+  ;;; This block exists solely to prevent errors.
+#+END_SRC
