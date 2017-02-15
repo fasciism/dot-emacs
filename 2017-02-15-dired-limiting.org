@@ -1,0 +1,127 @@
+For me, a great feature of Emacs is narrowing, and a indispensable feature of Gnus is limiting. I'd like to have the same feature, or a close approximation with similar bindings, in Dired. I've waited this long to implement it because I wanted to have a stack just like Gnus.
+
+First, we need to create a buffer-local variable to represent the stack of limits that have been applied.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (defvar-local mak::dired-limit-stack nil)))
+#+END_SRC
+
+Next, we create a macro. I've never made a macro before, but it seems to work. The reason I have made it is that Undo-Tree provides two useful functions: =undo-tree-save-to-register= and =undo-tree-restore-state-from-register=. Registers are extremely useful, and are global, so I don't want my code to clobber any of their values. So I have made the =with-register= macro that permits me to borrow a register for the duration of the sexp.
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro with-register (register &rest body)
+    "Execute the forms in body without allowing contents of register to change."
+    (let ((original (gensym))
+          (result (gensym)))
+      `(let ((,result nil))
+         (setq ,original (get-register ,register))
+         (setq ,result (progn ,@body))
+         (set-register ,register ,original)
+         ,result)))
+#+END_SRC
+
+Since this is the first register I've ever made, there are a few things I'd like to discuss. Macros generate code, and so it is bad form to use static variable names anywhere in the generated code. The solution for this is =gensym=:
+
+#+BEGIN_VERSE
+(gensym &optional PREFIX)
+
+Generate a new uninterned symbol.
+The name is made by appending a number to PREFIX, default "G".
+#+END_VERSE
+
+If you're a Lisp enthusiast, I recommend you go read about =gensym= alternatives like fexpr and hygienic macros, which are much fancier than what we're doing here. Another odd thing we're doing here is saving the result of evaluating the =body=, this is because this macro could conceivably used in some way that depends on its value, so to avoid surprises we have made that possible. Finally, we used the backquote syntax, and its children comma and splice. When generating code, especially with =gensym=, you need to have control over evaluation to allow you to determine how many levels of dereferencing you're using. This is done by using the backquote, preventing evaluation of the sexp to which it is applied. You'll notice that after the initial =let= establishing our dynamically-generated symbol names, we never again use =original= or =result= without a comma to give it a dereference. This ensures that the code we're generating doesn't contain the name =result= or =original=, but instead the =G=-prefixed symbol name. Last of all, the =,@= splice notation unpacks the list, promoting all its elements to the level at which the =,@= was called.
+
+That was a lot of words, so here's an example:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (macroexpand
+    '(with-register ?a
+       (set-register ?a "Monkeys")
+       (message (get-register ?a))))
+#+END_SRC
+
+Executing the =macroexpand= above generates the following code, which has been reformatted for readability:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (let ((G177 nil))
+    (setq G176 (get-register 97))
+    (setq G177 (progn
+                 (set-register 97 "Monkeys")
+                 (message ...)))
+    (set-register 97 G176)
+    G177)
+#+END_SRC
+
+Looks good! Next, we need to create the function that applies a new limit. This function must save the current buffer state to the stack, and then execute the limiting action. Unfortunately, marks are not preserved across limiting actions, but are restored when the limit is popped.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'undo-tree)
+  (defun mak::dired-push-limit (dired-mark-function)
+    "Limit the buffer to display a subset of files and directories."
+    (interactive)
+    ;; Save buffer state prior to applying limit.
+    (with-register ?q
+      (undo-tree-save-state-to-register ?q)
+      (add-to-list 'mak::dired-limit-stack (get-register ?q)))
+    ;; Clear all marks.
+    (dired-unmark-all-marks)
+    ;; Mark files we wish to view.
+    (call-interactively dired-mark-function)
+    ;; Invert which files are marked.
+    (dired-toggle-marks)
+    ;; Remove all marked files.
+    (dired-do-kill-lines))
+#+END_SRC
+
+Now we perform the pop, which is pretty easy. We just need to have a guard against the stack being empty, and the rest is restoring state.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::dired-pop-limit ()
+    "Pop the most recent limit from the dired-limit-ring."
+    (interactive)
+    (unless mak::dired-limit-stack
+      (user-error "No limit currently is in effect."))
+    ;; Restore buffer state to before we applied the limit.
+    (with-register ?q
+      (set-register ?q (pop mak::dired-limit-stack))
+      (undo-tree-restore-state-from-register ?q)))
+#+END_SRC
+
+We finish things off by binding to keys that seem sensible.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'dired-x)
+
+  ;; These bindings correspond to the default "*" bindings in Dired.
+  (define-key dired-mode-map (kbd "/ .")
+    (lambda ()
+      (interactive)
+      (mak::dired-push-limit 'dired-mark-extension)))
+  (define-key dired-mode-map (kbd "/ /")
+    (lambda ()
+      (interactive)
+      (mak::dired-push-limit 'dired-mark-directories)))
+  (define-key dired-mode-map (kbd "/ *")
+    (lambda ()
+      (interactive)
+      (mak::dired-push-limit 'dired-mark-executables)))
+  (define-key dired-mode-map (kbd "/ %")
+    (lambda ()
+      (interactive)
+      (mak::dired-push-limit 'dired-mark-files-regexp)))
+  (define-key dired-mode-map (kbd "/ g")
+    (lambda ()
+      (interactive)
+      (mak::dired-push-limit 'dired-mark-files-containing-regexp)))
+  (define-key dired-mode-map (kbd "/ s")
+    (lambda ()
+      (interactive)
+      (mak::dired-push-limit 'dired-mark-files-containing-regexp)))
+
+  ;; This binding is straight out of Gnus.
+  (define-key dired-mode-map (kbd "/ w") 'mak::dired-pop-limit)
+#+END_SRC
+
+It's not perfect, and the inability to preserve marks when applying more limits is unfortunate, but I'm quite happy with this for now. After writing this, I discovered [[https://github.com/fuco1/dired-hacks][Dired-Hacks]] which implements a very similar feature called [[https://github.com/fuco1/dired-hacks#dired-filter][dired-filter.]] As I use Dired more, I may add that to my configuration, but for now my cheap hack works for me.
