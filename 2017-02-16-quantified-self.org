@@ -1,0 +1,15 @@
+One thing I've always liked about the Windows Add/Remove Programs interface is that it provides you a date that the installed program was last used. When paring down the number of programs on a Windows computer, that date is helpful to gauge whether a program is useful enough to keep around. Since the number of Emacs packages tends to sprawl over time, I have installed the Keyfreq package to track the commands I use:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package keyfreq
+    :ensure t
+    :pin melpa-stable
+    :init
+    (setq keyfreq-file "~/.emacs.p/keyfreq/statistics"
+          keyfreq-file-lock "~/.emacs.p/keyfreq/lockfile")
+    :config
+    (keyfreq-mode 1)
+    (keyfreq-autosave-mode 1))
+#+END_SRC
+
+When I first installed this package, I didn't honestly think it would be that useful. But since installing it, I have used its output to appreciate how much my usage of certain commands is changing.
