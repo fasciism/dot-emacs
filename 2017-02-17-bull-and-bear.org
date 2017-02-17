@@ -1,0 +1,14 @@
+It's amazing how choosing the right keybinding for a feature can change your opinion of that feature. I've thought Expand-Region was neat for a long time, and it has been in my configuration at various points, but I've never used it on a regular basis, until now.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :pin melpa-stable
+    :bind
+    ("C-<prior>" . er/expand-region)
+    ("C-<next>" . er/contract-region))
+#+END_SRC
+
+On both my laptop keyboard and my Kinesis Advantage, the =Page Up= and =Page Down= keys are very accessible. At the time of me writing this, I have used =er/expand-region= over 400 times in the last two weeks, which I'd estimate is an order of magnitude more than the entire time before that.
+
+Here's the great [[http://emacsrocks.com/e09.html][Emacs Rocks]] video demonstrating Expand-Region.

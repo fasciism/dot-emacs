@@ -16,6 +16,6 @@ Emacs has an excellent undo system, once you get the hang of it. But as with all
 
 Let's see how the undo tree looks for this buffer:
 
-[[http://fasciism.com/img/2017-02-15-copenhagen-interpretation.png]]
+[[http://fasciism.com/img/2017-02-13-copenhagen-interpretation.png]]
 
 As you can see, I've performed several undo and redo operations at this point, and can navigate through them. If I choose any node in the undo tree, I will be presented with an explanatory diff telling me what that node's change represents in a small window.

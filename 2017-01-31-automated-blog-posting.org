@@ -4,7 +4,7 @@ To celebrate one full month of blogging, I have written a function that will pos
   (defun mak::fasciism-post-daily-blog ()
     "Posts daily blog in HTML and Org format to respective GitHub repos."
     ;; Publish the project to ensure the HTML file is on disk.
-    (org-publish-project "fasciism")
+    (org-publish-project "fasciism" t)
     ;; Set up the common one-liner to publish a file.
     (let ((cmd (string-join
                 '("cd %s"
@@ -15,9 +15,13 @@ To celebrate one full month of blogging, I have written a function that will pos
           (date (format-time-string "%F")))
       ;; Publish the HTML file.
       (let ((file (format "_posts/%s" date)))
-        (shell-command (format cmd "~/src/fasciism" file "html") "*fasciism-blog-post::html*"))
+        (shell-command
+         (format cmd "~/src/fasciism" file "html")
+         "*fasciism-blog-post::html*"))
       ;; Publish the Org file.
-      (shell-command (format cmd "~/.emacs.d" date "org") "*fasciism-blog-post::org*")))
+      (shell-command
+       (format cmd "~/.emacs.d" date "org")
+       "*fasciism-blog-post::org*")))
 
   (add-hook 'midnight-mode 'mak::fasciism-post-daily-blog)
 #+END_SRC
