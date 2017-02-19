@@ -1,0 +1,20 @@
+I've found that the presence of certain files and directories in Dired buffers is annoying. I spent some time considering adding the ability for certain directories to use my Dired limiting, but found =dired-omit-mode= instead:
+
+#+BEGIN_SRC emacs-lisp
+  (require 'dired-x)
+  (setq mak::dired-omit-files
+        '("^\\.$"
+          "^\\.\\.$"
+          "^\\.git$"))
+  (setq dired-omit-files
+        (mapconcat #'identity mak::dired-omit-files "\\|"))
+  (add-hook 'dired-mode-hook (lambda () (dired-omit-mode)))
+#+END_SRC
+
+Dired omit mode prevents a number of files and directories from being shown by default in Dired. These include revision control directories (e.g., =CVS=, =.git=, =.svn=) and derived files (e.g., =.elc=, =.o=). The mode can be disabled in cases where viewing the omitted entries is desirable.
+
+I have also been finding useful the ability to include a subdirectory in the view of its parent. What I've been frustrated by is the inconvenience of its default keybinding: =$=. I've bound this to =<tab>= to make it feel more like Org-mode.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key dired-mode-map (kbd "<tab>") 'dired-hide-subdir)
+#+END_SRC
