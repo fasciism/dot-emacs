@@ -1,0 +1,16 @@
+Another package that I've installed in the past but rarely used was Ace-Jump-Mode. The problem is that I never found a good keybinding for it, and so I rarely remembered to use it. Since Avy has carried on where Ace-Jump-Mode left off, I'm using it instead:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t
+    :pin melpa-stable
+    :bind
+    ("M-`" . avy-goto-char-2)
+    :config
+    (avy-setup-default)
+    (setq avy-keys '(?e ?t ?u ?h ?o ?n ?i ?d)))
+#+END_SRC
+
+[[http://emacsrocks.com/e10.html][Emacs Rocks]] has a great introduction to the idea of Avy, although it talks about Ace-Jump-Mode specifically. One important thing about Avy is that it defaults to Qwerty home row shortcuts for the candidates, but I prefer Dvorak home row shortcuts. This is easily remedied by altering =avy-keys=.
+
+I spent some time using =avy-goto-char= at first, but quickly changed to =avy-goto-char-2=. The problem is that if you only use one character, then there are many, many choices. You then have to look at what Avy has named the candidate your were intending, then read and type two letters. I found it much better to start by reading two characters and then typing them, then (usually) only having to read and type another character to indicate the selection. YMMV.
