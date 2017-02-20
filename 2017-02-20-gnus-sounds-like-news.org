@@ -1,0 +1,48 @@
+I literally /just/ got the joke of the name while writing this entry. Sometimes I'm a little late to the party.
+
+Anyways, Gnus is one of the many email and news readers available in Emacs. While others are reputed to be much more sane, straightforward, and easy to configure, I've been planning to switch from Mutt to Gnus for many years now. Some of the people whose opinions I respect espouse Gnus, so I'm going to try to live with it. Fingers crossed!
+
+The first and most obvious thing that we want to do with a newsreader is define my identity. While I have a few identities I'd like to use with Gnus, my primary one is:
+
+#+BEGIN_SRC emacs-lisp
+  (setq user-mail-address "mak@kolybabi.com"
+        user-full-name "Mak Kolybabi")
+#+END_SRC
+
+And with that, I realize that this is the first time I've named myself. [[http://mogigoma.com/][Hi, I'm Mak!]] I like long walks and configurable systems. Next we need to tell the system how to send email.
+
+#+BEGIN_SRC emacs-lisp
+  (setq send-mail-function 'smtpmail-send-it
+        smtpmail-smtp-server "mail.kolybabi.com"
+        smtpmail-stream-type 'starttls
+        smtpmail-smtp-service 587)
+#+END_SRC
+
+Now that we can send email, it is critical for me to not be able to /easily/ send mail accidentally. I'm the kind of person that has his IRSSI (IRC client) configured to require I hold =M-Enter= to send, for safety. Let's require a confirmation before sending an email:
+
+#+BEGIN_SRC emacs-lisp
+  (setq message-confirm-send t)
+#+END_SRC
+
+We can test sending an email with =C-x m=, which opens a buffer populated with the fields of an email. Once that test has confirmed that I can send email, I'll configure the reading of email.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-select-method
+        '(nnimap "kolybabi"
+                 (nnimap-address "mail.kolybabi.com")
+                 (nnimap-server-port "imaps")
+                 (nnimap-stream ssl)
+                 (nnmail-expiry-target "nnimap+kolybabi:trash")
+                 (nnmail-expiry-wait immediate)))
+#+END_SRC
+
+The credentials to log into SMTP and IMAP are stored in a separate file, =~/.authinfo=, and look like this:
+
+#+BEGIN_EXAMPLE
+machine mail.kolybabi.com login mak.kolybabi password hunter2 port imaps
+machine mail.kolybabi.com login mak.kolybabi password hunter2 port 587
+#+END_EXAMPLE
+
+Don't fret, my password isn't really [[http://bash.org/?244321][hunter2]].
+
+In retrospect, that wasn't much to configure at all. I'm sure there will be much more tweaking later, especially since I'd like to add certificate pinning for my mail server for additional protection, and move my credentials into =~/.authinfo.gpg=. But for now, this setup is /functional/, even if it's not yet /comfortable/.
