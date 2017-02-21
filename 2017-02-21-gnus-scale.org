@@ -1,0 +1,17 @@
+One thing that started bugging me immediately upon using Gnus was the prompt for how many messages I wanted to load from my inbox when it had more than 200 messages in it. It turns out that this behaviour is controlled by =gnus-large-newsgroup=, described as:
+
+#+BEGIN_VERSE
+The number of articles which indicates a large newsgroup.
+
+If the number of articles in a newsgroup is greater than this value, confirmation is required for selecting the newsgroup.
+
+If it is nil, no confirmation is required.
+#+END_VERSE
+
+So let's stop this right now:
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-large-newsgroup nil)
+#+END_SRC
+
+Now I feel less like Gnus is judging me for the size of my inbox.
