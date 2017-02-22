@@ -15,7 +15,7 @@ Once that configuration is in place, I reloaded Gnus by quitting it and re-enter
   {nnimap:kolybabi} (opened)
 #+END_VERSE
 
-By hitting =<enter>= on  =nntp:news.gwene.org= I can browse the list of newsgroups available on the server, and to toggle subscribing I can hit =u= (=gnus-group-unsubscribe-group=):
+By hitting =<enter>= on =nntp:news.gwene.org= I can browse the list of newsgroups available on the server, and to toggle subscribing I can hit =u= (=gnus-group-unsubscribe-group=):
 
 #+BEGIN_VERSE
 (gnus-group-unsubscribe-group GROUP &optional LEVEL SILENT)
