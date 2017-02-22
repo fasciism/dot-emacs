@@ -1,0 +1,40 @@
+I have used Newsbeuter happily for many years, since it is the Mutt of feed readers, and I love Mutt. However, in moving my life to Emacs I looked at some Emacs feed readers. I discovered Elfeed, and enjoyed it for a while. I've also attempted to use the RSS feed reader built into Gnus (via =G R=), but I really didn't like that. So I'm currently using Gwene as an NNTP source for Gnus. Gwene translates RSS and Atom feeds on the Internet into Newsgroups. This lowers the burden on individual sites, and has the benefit of not disclosing your IP to the sites.
+
+Setting up Gwene was really easy:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
+#+END_SRC
+
+Once that configuration is in place, I reloaded Gnus by quitting it and re-entering it for good measure. Then I hit =^= (=gnus-group-enter-server-mode=) which brought up the server buffer:
+
+#+BEGIN_VERSE
+  {nnfolder:archive} (opened)
+  {nndraft:} (opened)
+  {nntp:news.gwene.org} (opened)
+  {nnimap:kolybabi} (opened)
+#+END_VERSE
+
+By hitting =<enter>= on  =nntp:news.gwene.org= I can browse the list of newsgroups available on the server, and hit =u= (==) to subscribe.
+
+These are the newsgroups to which I am currently subscribed:
+
+#+BEGIN_VERSE
+  nntp+news.gwene.org:gmane.comp.security.langsec
+  nntp+news.gwene.org:gmane.comp.security.nmap.devel
+  nntp+news.gwene.org:gmane.comp.security.nmap.general
+  nntp+news.gwene.org:gmane.org.hackerspaces.skullspace.announce
+  nntp+news.gwene.org:gmane.org.hackerspaces.skullspace.general
+  nntp+news.gwene.org:gwene.com.blogspot.lcamtuf
+  nntp+news.gwene.org:gwene.com.cryptography.engineering.blog
+  nntp+news.gwene.org:gwene.com.devttys0
+  nntp+news.gwene.org:gwene.com.fasciism
+  nntp+news.gwene.org:gwene.electronics.bunniestudios.blog
+  nntp+news.gwene.org:gwene.net.boingboing
+  nntp+news.gwene.org:gwene.net.might.matt.articles
+  nntp+news.gwene.org:gwene.net.music4program
+  nntp+news.gwene.org:gwene.org.chneukirchen.blog
+  nntp+news.gwene.org:gwene.org.chneukirchen.trivium.index
+  nntp+news.gwene.org:gwene.org.emacsen.planet
+  nntp+news.gwene.org:gwene.org.jwz.blog
+#+END_VERSE
