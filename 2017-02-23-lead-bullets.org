@@ -1,0 +1,22 @@
+I'm punting it today due to time constraints. Here's a short bit of Org-mode configuration that I've seen other places and have adopted.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :pin melpa-stable
+    :config
+    (add-hook 'org-mode-hook (lambda ()
+                               (org-bullets-mode 1))))
+#+END_SRC
+
+This package changes the bullets used by Org-mode to make them visibly different at different levels. I've kept the default set of bullets provided by the package for the moment, but that may change as I start to use Org-mode more heavily.
+
+Another important change is telling Org-mode to hide leading bullets in headers so that you don't see five bullets prefixing a fifth-level header:
+
+#+BEGIN_SRC emacs-lisp
+ (setq org-hide-leading-stars t)
+#+END_SRC
+
+It's important to note that even with these changes, the actual text representation of the heading doesn't change: the file still has the same asterisks as always underneath it all. This is especially important for me, since I frequently write parts of emails in Org-mode, and then copy-and-paste them into O365. For now, at least. In the end, these configuration changes result in the following styling:
+
+[[http://fasciism.com/img/2017-02-23-lead-bullets.png]]
