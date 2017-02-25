@@ -1,0 +1,11 @@
+I've wanted to try Company-Mode for a while, so I enabled it today. It's one of the rare packages available in ELPA as opposed to MELPA. Company is a completion framework that offers a popup list after a delay (or immediately when called) in the current buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :pin
+    :config
+    (add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
+
+That's all the configuration it needs to start. From this point on I'll have popups whenever there are several options for a prefix that I've typed, or a dim suffix inline.
