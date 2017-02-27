@@ -1,0 +1,50 @@
+Continuing with my plan to make 2017 the Year of Structure, I need to start using Org-mode beyond this blog. I've been chasing the perfect Org-mode setup, putting off using it until I've designed my system fully. That's dumb, I'm dumb, time to get started. As Anne Lamot teaches, I need to embrace "Shitty First Drafts".
+
+I'm going to make =~/org= the base directory for all my Org-mode usage. I realize that this is the default value, but I find comfort in being explicit at this point.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory "~/org")
+#+END_SRC
+
+The next thing I want to do is make a keymap. Many people seem to give Org-mode features top level keybindings such as =C-c c= for capturing. I don't feel the need to do that (yet?), so I've decided to use a keymap bound to =C-c o=. I could bind things globally without using a keymap, but the keymap feels like the right choice.
+
+#+BEGIN_SRC emacs-lisp
+  (setq mak::org-mode-map (make-sparse-keymap))
+  (global-set-key (kbd "C-c o") mak::org-mode-map)
+#+END_SRC
+
+I feel like the obvious first feature to set up is Capture. Org-mode's capture facility pops up a buffer in which I can choose a (user-defined) template, and then fill in whatever I want captured. I can then chord =C-c C-c=, the general "do what I mean" command in Org-mode, and the information I've input will be whisked away and saved safely, returning me to whatever I was doing.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key mak::org-mode-map (kbd "c") 'org-capture)
+#+END_SRC
+
+I currently have a system that I've been using for a year or two where I send myself emails such as =mak+capture@kolybabi.com= and then manage my captures/todos as a series of email messages. While I don't have a system to properly manage those emails in my current configuration, I plan to keep that capture method and integrate Gnus and Org-mode to make it work.
+
+For the saving of these captures, I'd like the file to be named less generically than the default of =notes.org=:
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-default-notes-file (concat org-directory "/capture.org"))
+#+END_SRC
+
+When chording =C-c o c= from this blog post, I now see a buffer with the following:
+
+#+BEGIN_VERSE
+Select a capture template
+=========================
+
+[t]     Task
+---------------------------------------
+[C]     Customize org-capture templates
+[q]     Abort
+#+END_VERSE
+
+And after hitting =t= to create a generic task, I get the following in a temporary buffer:
+
+#+BEGIN_EXAMPLE
+  ** TODO
+     [2017-02-26 Sun]
+     [[file:~/.emacs.d/2017-02-26-bird-by-bird.org]]
+#+END_EXAMPLE
+
+Now I have a way to effortlessly capture when I'm in Emacs, but not elsewhere. So there we go, I've started using Org-mode in earnest. Time to figure out what _doesn't_ work for me, and fix that. How long could that process _possibly_ take...?
