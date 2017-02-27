@@ -29,7 +29,7 @@ For the saving of these captures, I'd like the file to be named less generically
 
 When chording =C-c o c= from this blog post, I now see a buffer with the following:
 
-#+BEGIN_VERSE
+#+BEGIN_EXAMPLE
 Select a capture template
 =========================
 
@@ -37,7 +37,7 @@ Select a capture template
 ---------------------------------------
 [C]     Customize org-capture templates
 [q]     Abort
-#+END_VERSE
+#+END_EXAMPLE
 
 And after hitting =t= to create a generic task, I get the following in a temporary buffer:
 
