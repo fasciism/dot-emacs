@@ -1,6 +1,7 @@
 One day into using Company and I admit that I'm enjoying it a great deal. One issue that hit me in the first day was that configuration files had completion suggestions, but capitalization of keywords was not being maintained. It turns out that Company maintains a list of modes in which it should preserve capitalization. So if you spend your days fiddling with configuration files, like I do, the following tweak is required:
 
 #+BEGIN_SRC emacs-lisp
+  (require 'company-dabbrev-code)
   (add-to-list 'company-dabbrev-code-modes 'conf-mode)
 #+END_SRC
 
