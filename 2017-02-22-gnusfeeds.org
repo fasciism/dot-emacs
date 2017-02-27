@@ -3,6 +3,7 @@ I have used Newsbeuter happily for many years, since it is the Mutt of feed read
 Setting up Gwene was really easy:
 
 #+BEGIN_SRC emacs-lisp
+  (require 'gnus)
   (add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
 #+END_SRC
 
