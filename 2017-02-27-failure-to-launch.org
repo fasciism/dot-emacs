@@ -1,0 +1,43 @@
+I have recently come across a useful addition for my Eshell prompt. I have a love of a simple prompt, but one thing I think it is worthwhile to add is a warning when the previous command exited with a non-zero exit status.
+
+This will be the first time we replace the definition of a function. Thanks to Lisp being great, this is effortless.
+
+#+BEGIN_SRC emacs-lisp
+  ;;(require 'esh-io)
+  (defun mak::last-command-status ()
+    (interactive)
+    (let ((c eshell-last-command-status))
+      (when (and c (not (eq 0 c)))
+        (format "?%d " c))))
+
+  (defun mak::eshell-prompt ()
+    (interactive)
+    (concat (if (not (eq 0 (current-column)))
+                "\n"
+              "")
+            (mak::last-command-status)
+            (mak::ghost-or-percent)
+            " "))
+#+END_SRC
+
+Then we update the prompt regex to match our new prompt format:
+
+#+BEGIN_SRC emacs-lisp
+  (setq eshell-prompt-regexp (format "^\(?[0-9]+ \)\?%s " (mak::ghost-or-percent)))
+#+END_SRC
+
+And take the new prompt for a spin.
+
+#+BEGIN_EXAMPLE
+👻 false
+?1 👻 false
+?1 👻 true
+👻 true
+👻 false
+?1 👻 true
+👻
+#+END_EXAMPLE
+
+There we go. I don't need the current directory in the prompt, because I can find that in a heartbeat. I don't need the current Git branch in the prompt, because I do everything with Magit. This will be useful in that while I can find the information if I need, checking the exit status is something I never think to do.
+
+One glitch that testing revealed is that if I run a command that exits with a non-zero status, kill the Eshell buffer, and create a new Eshell buffer, the prompt will be =?1 👻=. This indicates that Eshell does not clear the =eshell-last-command-status= variable on initialization. I'm not going to fix this in my code, because I feel like it should be fixed in Eshell. Maybe I'll submit a bug report for it when I have some free time.
