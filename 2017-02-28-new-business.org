@@ -1,7 +1,3 @@
-#+BEGIN_SRC emacs-lisp
-  ;;; -*- lexical-binding: t; -*-
-#+END_SRC
-
 Let's finish off February with something I'm trying to make a part of my life: workflows. You can call them checklists, but I'm going to stick with the more generic term of workflow since I don't want to narrow how I think about their usage. The majority of tasks in my life are repetitive. What I want is a simple way of writing an Org-mode file, dropping it a specific directory, and being able to create an instance of that template that Org will operate on.
 
 Let's start by creating the workflow template instantiation function, and binding it to my Org-mode keymap:
