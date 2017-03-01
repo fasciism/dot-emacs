@@ -1,0 +1,53 @@
+#+BEGIN_SRC emacs-lisp
+  ;;; -*- lexical-binding: t; -*-
+#+END_SRC
+
+Let's finish off February with something I'm trying to make a part of my life: workflows. You can call them checklists, but I'm going to stick with the more generic term of workflow since I don't want to narrow how I think about their usage. The majority of tasks in my life are repetitive. What I want is a simple way of writing an Org-mode file, dropping it a specific directory, and being able to create an instance of that template that Org will operate on.
+
+Let's start by creating the workflow template instantiation function, and binding it to my Org-mode keymap:
+
+#+BEGIN_SRC emacs-lisp
+  (defvar org-workflow-dir
+    (concat org-directory "/workflows")
+    "Directory in which my workflows are stored.")
+
+  (defun mak::org-new-workflow (template)
+    (interactive
+     ;; Choose a workflow template.
+     (list (read-file-name "Workflow: " (concat org-workflow-dir "/templates/"))))
+    ;; Generate the template's file name.
+    (let* ((datetime (format-time-string "%F::%T"))
+           (filename (file-name-nondirectory template))
+           (workflow (format "%s/active/%s::%s" org-workflow-dir datetime filename)))
+      (copy-file template workflow)
+      (find-file workflow)))
+
+  (define-key mak::org-mode-map (kbd "w") 'mak::org-new-workflow)
+#+END_SRC
+
+Now when I chord =C-c o w=, I will be able to choose a workflow template with Helm, and a new file matching the current date and time, suffixed with the template's file name, will be created, 'activated', and opened in a buffer. By activated, I mean that the template will exposed to Org-mode's Agenda. An example file name is =2017-02-28::01:06:33::month-end.org=.
+
+We need to make Agenda aware of where the Org-mode files I want it to use are kept. For now I will include _all_ files in my =~/org= directory, since there is no reason to do otherwise. I suspect that I will eventually reach a point where the number of files Org is processing will require me to archive some files, but I'm not there yet. And when I do reach that point, creating a way to archive a file to =~/org/workflows/archive= should be easy.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files
+        (list org-directory
+              (concat org-workflow-dir "/active")))
+#+END_SRC
+
+Finally, I want to create two Agenda views: calendar and tasks.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::org-agenda-calendar (&optional arg)
+    (interactive "P")
+    (org-agenda arg "a"))
+
+  (defun mak::org-agenda-tasks (&optional arg)
+    (interactive "P")
+    (org-agenda arg "t"))
+
+  (define-key mak::org-mode-map (kbd "a") 'mak::org-agenda-calendar)
+  (define-key mak::org-mode-map (kbd "t") 'mak::org-agenda-tasks)
+#+END_SRC
+
+As usual, there's more to do here, but the perfect is the enemy of the good. This is usable, and does what I need for now.
