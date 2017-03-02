@@ -1,0 +1,43 @@
+Gnus uses newsgroups as its central metaphor. As an individual that never really experienced newsgroups, for which I am sad, some concepts are a little foreign to me. One concept is that of a kill file.
+
+Newsgroups were in some sense a shared mailbox, or an RSS feed of emails, arranged in a hierarchy. Individuals could 'subscribe' to a group by telling their newsreader to pull down the current 'feed' and storing the new posts to the local computer. There was a lot more to this, including only downloading headers, propagation between servers, and varying retention periods between servers. The aspect of these oldschool newsgroups that I care about today are kill files.
+
+A newsreader's kill file instructed it to kill (delete/ignore) certain messages in newsgroups. This was done to filter out topics of which the user had no interest, and to mute users considered abusive or annoying. Gnus supports kill files, but they are deprecated. In my case, my mail server adds =X-Spam-Status= as a header to all incoming email. Deleting email that my mail server has determined is spam is a classic use of a kill file:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (require 'gnus-kill)
+  (gnus-kill "X-Spam-Status" "Yes")
+  (gnus-expunge "X")
+#+END_SRC
+
+This example doesn't make much sense without reading the documentation of the two commands:
+
+#+BEGIN_VERSE
+  (gnus-kill FIELD REGEXP &optional EXE-COMMAND ALL SILENT)
+
+  If FIELD of an article matches REGEXP, execute COMMAND.
+
+  Optional 1st argument COMMAND is default (gnus-summary-mark-as-read nil "X").
+#+END_VERSE
+
+So this means that since we did not pass an =EXE-COMMAND= argument, the messages were set as read and marked with an =X=.
+
+#+BEGIN_VERSE
+  (gnus-expunge MARKS)
+
+  Remove lines marked with MARKS.
+#+END_VERSE
+
+And this means that the =X=-marked messages are deleted.
+
+Now that we understand kill files, it's time for the punchline: We're not going to use them. The reason is that Gnus has a more modern facility that is recommended by the manual:
+
+#+BEGIN_QUOTE
+  In short, kill processing is a lot slower (and I do mean a lot) than score processing, so it might be a good idea to rewrite your kill files into score files.
+#+END_QUOTE
+
+So I'm working on getting my Gnus to work with score files. But I'm saving that for another day.
+
+#+BEGIN_SRC emacs-lisp :exports none
+  ;;; This block exists solely to prevent errors.
+#+END_SRC
