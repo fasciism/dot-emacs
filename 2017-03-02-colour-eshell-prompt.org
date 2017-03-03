@@ -1,0 +1,19 @@
+I had never considered before today how to change the colour of some text. I had messed with applying faces to fonts before when making major modes, but I had never looked into styling a specific string. It turns out to be easy:
+
+#!+BEGIN_VERSE
+(propertize STRING &rest PROPERTIES)
+
+Return a copy of STRING with text properties added.
+First argument is the string to copy.
+Remaining arguments form a sequence of PROPERTY VALUE pairs for text properties to add to the result.
+#!+END_VERSE
+
+We could leave =mak::last-command-status= alone, and then advise the function to manipulate its output, but that will inevitably confuse me some day when I am debugging something. So we'll just add a simple =propertize= call to make the exit code of a command even more visible:
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::last-command-status ()
+    (interactive)
+    (let ((c eshell-last-command-status))
+      (when (and c (not (eq 0 c)))
+        (propertize (format "?%d " c) 'face '(:foreground "red")))))
+#+END_SRC
