@@ -1,0 +1,11 @@
+Now that I've been using Gnus for all my personal email, I've been using Message mode a lot. One thing I need to do very frequently is CC or BCC people or groups. For example, I run a few non-profits and frequently have to CC the =organizers@= list for our group with any email representing the non-profit to keep the other directors informed. While Message mode is awesome because I can simply type in the names of new headers, I would find it slightly more convenient of the headers I commonly use were already there. And if there's one thing Emacs is about, it's making things slightly more convenient:
+
+#+BEGIN_SRC emacs-lisp
+  (setq message-default-mail-headers "Cc: \nBcc: \n")
+#+END_SRC
+
+I also run my own mail server for my extended family since I've gotten =kolybabi.com= for us. This means that if anything goes wrong with the server, I need to hear about it. So I'll enable debugging on sending mail.
+
+#+BEGIN_SRC emacs-lisp
+  (setq smtpmail-debug-info t)
+#+END_SRC
