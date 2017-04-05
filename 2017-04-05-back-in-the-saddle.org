@@ -1,0 +1,13 @@
+Sorry for the lull. The last month has been particularly distracting. One thing that has been bugging me over the last month, during which I lived in email a lot, is the inconsistency in presentation between my personal mail and my Gmail caused by not having them both declared in =gnus-secondary-select-methods=. So let's fix this without re-declaring the configuration of my personal mail.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-secondary-select-methods
+        (cons gnus-select-method
+              gnus-secondary-select-methods))
+#+END_SRC
+
+A minor change, but now all of my mail folders are properly prefixed with the =nnimap+<name>= specifier, instead of only the Gmail folders appearing that way. We also need to unset the primary select method, otherwise having the same server specified twice could get confusing. We do this using the =nnnil= backend which acts as a dummy.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-select-method '(nnnil ""))
+#+END_SRC
