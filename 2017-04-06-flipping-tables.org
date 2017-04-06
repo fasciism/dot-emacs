@@ -1,0 +1,19 @@
+The default style of the Gnus summary buffers has been bugging me, so I've changed it to something more palatable.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-user-date-format-alist
+        '(((gnus-seconds-today)           . "Today")
+          ((+ 86400 (gnus-seconds-today)) . "Yesterday")
+          (604800                         . "%A")
+          ((gnus-seconds-month)           . "%A %d")
+          ((gnus-seconds-year)            . "%B %d")
+          (t                              . "%Y-%m-%d")))
+
+  ;; U: Unread indicator
+  ;; R: Mark
+  ;; z: Indicates +/- for above/below default score
+  ;; f: Sender
+  ;; B: Tree display
+  ;; s: Subject if root of thread or different from root
+  (setq gnus-summary-line-format "%U%R%z  %-17,17&user-date;  %-40,40f %B%s\n")
+#+END_SRC
