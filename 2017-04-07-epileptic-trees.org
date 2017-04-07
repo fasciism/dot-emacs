@@ -1,0 +1,91 @@
+While I don't always have threading enabled in my email, when I do it's nice to have something pretty. So let's start by defining a seasonal symbol for the root of the tree.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::seasonal-tree ()
+    (interactive)
+    (let* ((month (format-time-string "%b"))
+           (tree (cond ((equal month "Jan") ?🌲)
+                       ((equal month "Feb") ?🌲)
+                       ((equal month "Mar") ?🌱)
+                       ((equal month "Apr") ?🌱)
+                       ((equal month "May") ?🌱)
+                       ((equal month "Jun") ?🌳)
+                       ((equal month "Jul") ?🌳)
+                       ((equal month "Aug") ?🌳)
+                       ((equal month "Sep") ?🌳)
+                       ((equal month "Oct") ?🌲)
+                       ((equal month "Nov") ?🌲)
+                       ((equal month "Dec") ?🎄))))
+      (set-fontset-font t tree "Noto Emoji" nil 'prepend)
+      tree))
+#+END_SRC
+
+We've used the same trick here as for the Eshell prompt. While this has worked so far, at some point we'll have to declare that the entire range of emoji should be rendered using the Noto Emoji font.
+
+Now we declare the symbols used to create the tree.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default gnus-sum-thread-tree-false-root (format "%c " (mak::seasonal-tree))
+                gnus-sum-thread-tree-root       (format "%c " (mak::seasonal-tree))
+                gnus-sum-thread-tree-indent          " "
+                gnus-sum-thread-tree-vertical        "│"
+                gnus-sum-thread-tree-leaf-with-other "├► "
+                gnus-sum-thread-tree-single-leaf     "╰► ")
+#+END_SRC
+
+One thing that I hadn't given much thought to before now is that the threading in Gnus always seemed wrong to me. It turns out that's because it was performing threading by /subject/, not by /reference/. This means that when I received automated emails with the same subject, they would be grouped into a thread. We can fix this easily:
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references)
+#+END_SRC
+
+This allows my email to look much more sane to me, only threading messages that are actually related, to look similar to the following, except it's more spread out in reality:
+
+#+BEGIN_EXAMPLE
+  January 10   [REDACTED]  🌱 BSidesWpg 2017
+  January 10   [REDACTED]  ╰►
+  January 10   [REDACTED]   ├►
+  January 15   [REDACTED]   │╰►
+  January 23   [REDACTED]   │ ╰►
+  January 23   [REDACTED]   │  ╰►
+  January 24   [REDACTED]   │   ├►
+  January 24   [REDACTED]   │   │├►
+  January 24   [REDACTED]   │   ││├►
+  January 25   [REDACTED]   │   │││╰►
+  January 24   [REDACTED]   │   ││╰►
+  January 24   [REDACTED]   │   │╰►
+  January 24   [REDACTED]   │   ╰►
+  January 10   [REDACTED]   ╰►
+  ...          ...          ...
+  February 05  Audible.com  Thank you for shopping at Audible
+  February 20  Audible.com  Thank you for shopping at Audible
+#+END_EXAMPLE
+
+Finally, I want to force Summary buffers to be sorted by date. Specifically, any time you enter a buffer Gnus will start you at the top, so the most recent articles should be there. Additionally, if there is a thread full of older messages, and one relatively new message, I want the entire thread to be placed into the Summary buffer according to the date of the newest message.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date))
+#+END_SRC
+
+This results in the following sort, in which the thread is sorted according to its newest article (January 25), not the root of the thread (January 10):
+
+#+BEGIN_EXAMPLE
+  January 25   [REDACTED]  [SkullSpace-Announce] ...
+  January 10   [REDACTED]  🌱 BSidesWpg 2017
+  January 10   [REDACTED]  ╰►
+  January 10   [REDACTED]   ├►
+  January 15   [REDACTED]   │╰►
+  January 23   [REDACTED]   │ ╰►
+  January 23   [REDACTED]   │  ╰►
+  January 24   [REDACTED]   │   ├►
+  January 24   [REDACTED]   │   │├►
+  January 24   [REDACTED]   │   ││├►
+  January 25   [REDACTED]   │   │││╰►
+  January 24   [REDACTED]   │   ││╰►
+  January 24   [REDACTED]   │   │╰►
+  January 24   [REDACTED]   │   ╰►
+  January 10   [REDACTED]   ╰►
+  January 24   [REDACTED]  [SkullSpace-Announce] ...
+#+END_EXAMPLE
+
+That's enough for today!
