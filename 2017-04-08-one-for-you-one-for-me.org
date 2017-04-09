@@ -1,0 +1,11 @@
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-message-archive-method
+        '(nnimap "kolybabi"
+                 (nnfolder-inhibit-expiry t))
+        gnus-message-archive-group "sent")
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-gcc-mark-as-read t)
+#+END_SRC
