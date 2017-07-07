@@ -4,6 +4,7 @@ I've wanted to try Company-Mode for a while, so I enabled it today. It's one of 
   (use-package company
     :ensure t
     :pin elpa
+    :diminish company-mode
     :config
     (add-hook 'after-init-hook 'global-company-mode))
 #+END_SRC
