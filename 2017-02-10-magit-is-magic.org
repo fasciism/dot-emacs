@@ -5,7 +5,7 @@ I stopped doing development for a living three years ago, having moved into secu
     :ensure t
     :pin melpa-stable
     :bind
-    ("C-c g" . magit-status))
+    ("C-c C-g" . magit-status))
 #+END_SRC
 
 Magit's maintainer is very active, new releases are frequent. I love Magit so much that I contribute to the [[https://www.patreon.com/tarsius][maintainer's Patreon]]. It's really that good.
