@@ -1,0 +1,56 @@
+As I dedicate myself to Eshell more, especially on this Macbook which violates all my muscle memory in Terminal.app, a few tweaks are needed to be able to find all my commands:
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::flatten-list (l)
+    (apply #'append l))
+
+  (defun mak::locally-installed-programs ()
+    (mak::flatten-list
+     (mapcar
+      (lambda (d) (list (concat d "/bin")
+                        (concat d "/sbin")))
+      (directory-files "~/local" t directory-files-no-dot-files-regexp))))
+
+  (defun mak::generate-path-env-var ()
+    (interactive)
+    ;; The order of this list is critical:
+    ;; 1) Scripts I wrote myself
+    ;; 2) Programs installed privately
+    ;; 3) Programs installed system-wide
+    ;; 4) Stock OS commands
+    (mapcar #'expand-file-name
+           (mak::flatten-list
+            `(("~/bin")
+              ,(mak::locally-installed-programs)
+              ("/usr/local/bin" "/usr/local/sbin")
+              ("/bin" "/sbin")))))
+#+END_SRC
+
+Let's use IELM to test those functions, since we've not used it before and it's neat to see.
+
+#+BEGIN_EXAMPLE
+*** Welcome to IELM ***  Type (describe-mode) for help.
+ELISP> (mak::flatten-list '((a) (b c) (d e f) (g (h) i)))
+(a b c d e f g
+   (h)
+   i)
+
+ELISP> (mak::locally-installed-programs)
+("/Users/mak/local/openssl/bin" "/Users/mak/local/openssl/sbin")
+
+ELISP> (mak::generate-path-env-var)
+("/Users/mak/bin" "/Users/mak/local/openssl/bin" "/Users/mak/local/openssl/sbin" "/usr/local/bin" "/usr/local/sbin" "/bin" "/sbin")
+#+END_EXAMPLE
+
+You'll notice that flatten only goes one level deep. I'm okay with that for now, but I anticipate Future Me hating Present Me for this.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::set-path-env-var ()
+    (interactive)
+    (setenv "PATH"
+            (string-join (mak::generate-path-env-var) ":")))
+
+  (add-hook 'eshell-mode-hook 'mak::set-path-env-var)
+#+END_SRC
+
+And there we have it! Eshell will now generate and set the appropriate =$PATH= variable when it starts.
