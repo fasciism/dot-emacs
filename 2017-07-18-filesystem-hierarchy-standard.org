@@ -15,13 +15,15 @@ As I dedicate myself to Eshell more, especially on this Macbook which violates a
     (interactive)
     ;; The order of this list is critical:
     ;; 1) Scripts I wrote myself
-    ;; 2) Programs installed privately
-    ;; 3) Programs installed system-wide
-    ;; 4) Stock OS commands
+    ;; 2) Programs installed privately (source)
+    ;; 3) Programs installed privately (golang)
+    ;; 4) Programs installed system-wide
+    ;; 5) Stock OS commands
     (mapcar #'expand-file-name
            (mak::flatten-list
             `(("~/bin")
               ,(mak::locally-installed-programs)
+              ("~/go/bin")
               ("/usr/local/bin" "/usr/local/sbin")
               ("/bin" "/sbin")))))
 #+END_SRC
