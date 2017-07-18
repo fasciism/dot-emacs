@@ -29,7 +29,6 @@ As I dedicate myself to Eshell more, especially on this Macbook which violates a
 Let's use IELM to test those functions, since we've not used it before and it's neat to see.
 
 #+BEGIN_EXAMPLE
-*** Welcome to IELM ***  Type (describe-mode) for help.
 ELISP> (mak::flatten-list '((a) (b c) (d e f) (g (h) i)))
 (a b c d e f g
    (h)
