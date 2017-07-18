@@ -37,10 +37,10 @@ ELISP> (mak::flatten-list '((a) (b c) (d e f) (g (h) i)))
    i)
 
 ELISP> (mak::locally-installed-programs)
-("/Users/mak/local/openssl/bin" "/Users/mak/local/openssl/sbin")
+("/Users/mak/local/emacs/bin" "/Users/mak/local/emacs/sbin")
 
 ELISP> (mak::generate-path-env-var)
-("/Users/mak/bin" "/Users/mak/local/openssl/bin" "/Users/mak/local/openssl/sbin" "/usr/local/bin" "/usr/local/sbin" "/bin" "/sbin")
+("/Users/mak/bin" "/Users/mak/local/emacs/bin" "/Users/mak/local/emacs/sbin" ...)
 #+END_EXAMPLE
 
 You'll notice that flatten only goes one level deep. I'm okay with that for now, but I anticipate Future Me hating Present Me for this.
