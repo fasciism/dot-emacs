@@ -25,7 +25,7 @@ As I dedicate myself to Eshell more, especially on this Macbook which violates a
               ,(mak::locally-installed-programs)
               ("~/go/bin")
               ("/usr/local/bin" "/usr/local/sbin")
-              ("/bin" "/sbin")))))
+              ("/usr/bin" "/usr/sbin" "/bin" "/sbin")))))
 #+END_SRC
 
 Let's use IELM to test those functions, since we've not used it before and it's neat to see.
