@@ -1,0 +1,39 @@
+Before we begin, I'm going to be using a lot of snippets from Git's configuration file(s). I originally used =BEGIN_EXAMPLE= to render these as preformatted blocks, but after some research I discovered that the following code will create a new 'source language' with which we can view those snippets.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-src-lang-modes '("gitconfig" . "conf-unix"))
+#+END_SRC
+
+I found that mode's name by opening =~/.gitconfig= and typing =C-h v major-mode= to view the value.
+
+With my new job using GitHub for its development workflow, suddenly maintaining a separate work identity in Git matters. Since we have dozens of repositories, setting my identify in each one was getting very tedious and error-prone. Git now has a feature that permits including files into its configuration based on the directory of the repository. This by having the following within my =~/.gitconfig=:
+
+#+BEGIN_SRC gitconfig
+  [includeIf "gitdir/i:~/go/"]
+  	path = ~/.gitconfig.work
+#+END_SRC
+
+Note the use of =gitdir/i=, since I am on a Macbook which I just discovered treats path components in a case-insensitive manner, so we use this instead of =gitdir= just in case. The contents of =~/.gitconfig.work= are:
+
+#+BEGIN_SRC gitconfig
+  [user]
+  	email = <my-work-email>
+#+END_SRC
+
+Additionally, there are some files that I create locally (e.g., =TAGS=) that I do not want to be considered by Git. Adding these to each repo sucks, so I'm now taking advantage of the following in =~/.gitconfig=, which does just what it says on the tin:
+
+#+BEGIN_SRC gitconfig
+  [core]
+  	excludesfile = ~/.gitignore.global
+#+END_SRC
+
+Finally, some of the setup scripts I've been running into try to clone private repositories from GitHub over HTTPS, requiring usernames and passwords. Since I'm a firm believer in the user of SSH keys whenever possible, but don't want to (or don't have the power to) fix all these scripts, I have found another handy Git feature that forces specified transports for certain hosts:
+
+#+BEGIN_SRC gitconfig
+  [url "git@github.com:"]
+  	insteadOf = https://github.com/
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :exports none
+  ;;; This block exists solely to prevent errors.
+#+END_SRC
