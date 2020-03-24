@@ -6,6 +6,7 @@ Another package that I've installed in the past but rarely used was Ace-Jump-Mod
     :pin melpa-stable
     :bind
     ("M-`" . avy-goto-char-2)
+    ("M-j" . avy-goto-word-1)
     :config
     (avy-setup-default)
     (setq avy-keys '(?e ?t ?u ?h ?o ?n ?i ?d)))
