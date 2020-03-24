@@ -9,6 +9,7 @@ I've been holding off on adding packages to my configuration until I had been at
           ("elpa" . "https://elpa.gnu.org/packages/")))
   (setq package-enable-at-startup nil)
   (package-initialize)
+  (package-refresh-contents)
 #+END_SRC
 
 Note that instead of using =add-to-list= I have used =setq=. This is because for no functional reason, I just like seeing =elpa= instead of =gnu= as the name of the core Emacs repo. Whenever possible, I will try and use packages from the =elpa= repository first, then =melpa-stable=, then =melpa=, then =marmalade=. I have nothing against Marmalade, and placing it last is not a statement about its quality or trustworthiness, I just like MELPA's idea of having a stable repository.
