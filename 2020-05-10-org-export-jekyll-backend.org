@@ -4,18 +4,18 @@ Since I started this blog I've been using a [[https://fasciism.com/2017/01/25/ba
 
 Org-mode has many backends that export to different formats, but it also allows backends to derive from other backends. This blog had been [[https://fasciism.com/2017/01/05/self-publishing/][using]] the HTML backend. What I'd like to have is an exporter that allows me to have custom export options translated into a YAML header for use by Jekyll, with defaults. For example:
 
-#+BEGIN_EXAMPLE
+#+BEGIN_SRC org :exports none
   #+TITLE: Org Export Jekyll Backend
-#+END_EXAMPLE
+#+END_SRC
 
 And the output written to the fASCIIsm Jekyll repository would be:
 
-#+BEGIN_EXAMPLE
+#+BEGIN_SRC yaml :exports none
   ---
   title:  "Org Export Jekyll Backend"
   layout: post
   ---
-#+END_EXAMPLE
+#+END_SRC
 
 Reading through the documentation, I discovered the following variable that does exactly what I want:
 
@@ -82,7 +82,7 @@ Since testing is good I took another function from ~org-mode/contrib/lisp/ox-con
 
 Running this function via ~M-x org-export-jekyll-as-jekyll~, this blog post/config file renders:
 
-#+BEGIN_EXAMPLE
+#+BEGIN_SRC yaml :exports none
   ---
   title:  "Org Export Jekyll Backend"
   layout: post
@@ -90,7 +90,7 @@ Running this function via ~M-x org-export-jekyll-as-jekyll~, this blog post/conf
 
   <p>
   Since I started this blog I've been using a...
-#+END_EXAMPLE
+#+END_SRC
 
 Exporting to buffers is good for testing, but exporting to files is necessary for the project interface.
 
