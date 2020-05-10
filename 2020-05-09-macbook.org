@@ -1,0 +1,15 @@
+I have just realized tonight that I've been sitting on all kinds of posts that I thought I'd already published. Expect updates, finally!
+
+When I have to be away from my beloved Kinesis Advantage 2, with its glorious blank keycaps and Dvorak keymap, I find myself on one of two Macbooks for work. As many others have noted, the Caps Lock key is a pox upon keyboard everywhere, and I universally rebind it to Control:
+
+[[http://fasciism.com/img/2020-05-09-macbook.png]]
+
+My muscle memory on normal, lame keyboard also expects to find Alt (Meta) just to the left of the space bar, to I take care of that with a bit of Elisp:
+
+#+BEGIN_SRC emacs-lisp
+  (setq mac-command-key-is-meta t)
+  (setq mac-command-modifier 'meta)
+
+  (setq mac-option-key-is-meta nil)
+  (setq mac-option-modifier nil)
+#+END_SRC
