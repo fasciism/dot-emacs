@@ -1,0 +1,124 @@
+#+TITLE: Org Export Jekyll Backend
+
+Since I started this blog I've been using a [[https://fasciism.com/2017/01/25/batch-jekyll-publishing/][sketchy method]] to add the necessary YAML headers to exported Org-mode files for Jekyll. It's a pain, and I screwed it up yesterday and discovered that the titles for previous blog posts weren't always proper. The reason for that is the titles were based on the file names, and those don't contain all the proper capitalization and punctuation. Poka-yoke dictates that I must now create either guardrails or automation to prevent me from screwing this up in future, and also use this as an opportunity to learn something.
+
+Org-mode has many backends that export to different formats, but it also allows backends to derive from other backends. This blog had been [[https://fasciism.com/2017/01/05/self-publishing/][using]] the HTML backend. What I'd like to have is an exporter that allows me to have custom export options translated into a YAML header for use by Jekyll, with defaults. For example:
+
+#+BEGIN_EXAMPLE
+  #+TITLE: Org Export Jekyll Backend
+#+END_EXAMPLE
+
+And the output written to the fASCIIsm Jekyll repository would be:
+
+#+BEGIN_EXAMPLE
+  ---
+  title:  "Org Export Jekyll Backend"
+  layout: post
+  ---
+#+END_EXAMPLE
+
+Reading through the documentation, I discovered the following variable that does exactly what I want:
+
+#+BEGIN_VERSE
+org-export-options-alist is a variable defined in ‘ox.el’.
+...
+Alist between export properties and ways to set them.
+
+The key of the alist is the property name, and the value is a list
+like (KEYWORD OPTION DEFAULT BEHAVIOR) where:
+
+KEYWORD is a string representing a buffer keyword, or nil.  Each
+  property defined this way can also be set, during subtree
+  export, through a headline property named after the keyword
+  with the "EXPORT_" prefix (i.e. DATE keyword and EXPORT_DATE
+  property).
+OPTION is a string that could be found in an #+OPTIONS: line.
+DEFAULT is the default value for the property.
+BEHAVIOR determines how Org should handle multiple keywords for
+  the same property.  It is a symbol among:
+  nil       Keep old value and discard the new one.
+  t         Replace old value with the new one.
+#+END_VERSE
+
+The documentation for this variable also notes that ~#+TITLE~ is already defined for all exporters, meaning we only need to define ~#+LAYOUT~ and give it our desired default.
+
+The ~template~ hook in the ~translate-alist~ defined the final output function of an exporter. By redefining this, while leaving all other hooks alone, we cause the exporter to fall back to using the HTML backend for everything except the final output.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'org)
+  (require 'ox-publish)
+
+  (org-export-define-derived-backend 'jekyll 'html
+    :options-alist
+    '((nil "LAYOUT" "post" t))
+    :translate-alist
+    '((template . org-jekyll-template)))
+#+END_SRC
+
+Next, I +stole+ +liberated+ +borrowed+ +blindly copied+ took inspiration from the template functions in [[https://code.orgmode.org/bzg/org-mode/src/master/lisp/ox-beamer.el][org-mode/lisp/ox-beamer.el]] and [[https://code.orgmode.org/bzg/org-mode/src/master/contrib/lisp/ox-confluence.el][org-mode/contrib/lisp/ox-confluence.el]] to produce a function that outputs the HTMLified content with a YAML header in front:
+
+#+BEGIN_SRC emacs-lisp
+  (defun org-jekyll-template (contents info)
+    (let ((title (org-export-data (plist-get info :title) info))
+          (layout (org-export-data (plist-get info :layout) info)))
+      (concat "---\n"
+              (format "title:  \"%s\"\n" title)
+              (format "layout: post\n" layout)
+              "---\n\n"
+              contents)))
+#+END_SRC
+
+Since testing is good I took another function from ~org-mode/contrib/lisp/ox-confluence.el~:
+
+#+BEGIN_SRC emacs-lisp
+  (defun org-jekyll-export-as-jekyll (&optional async subtreep visible-only body-only ext-plist)
+    "Export current buffer to a text buffer.
+
+  For information on arguments, see `org-export-to-buffer'."
+    (interactive)
+    (org-export-to-buffer 'jekyll "*org JEKYLL Export*"
+      async subtreep visible-only body-only ext-plist (lambda () (text-mode))))
+#+END_SRC
+
+Running this function via ~M-x org-export-jekyll-as-jekyll~, this blog post/config file renders:
+
+#+BEGIN_EXAMPLE
+  ---
+  title:  "Org Export Jekyll Backend"
+  layout: post
+  ---
+
+  <p>
+  Since I started this blog I've been using a...
+#+END_EXAMPLE
+
+Exporting to buffers is good for testing, but exporting to files is necessary for the project interface.
+
+#+BEGIN_SRC emacs-lisp
+  (defun org-jekyll-publish-to-jekyll (plist filename pub-dir)
+    "Publish an org file to Jekyll.
+
+  For information on arguments, see `org-publish-org-to'."
+    (org-publish-org-to 'jekyll filename ".html" plist pub-dir))
+#+END_SRC
+
+Finally, I need to get the Org-mode project reconfigured to use our new exporter. Going back to our [[https://fasciism.com/2017/01/05/self-publishing/][previous setup]] and copying and editing the project's declaration is easier than altering the existing declaration. We can also fix a long-standing goof about the location of images.
+
+#+BEGIN_SRC emacs-lisp
+  (provide 'ox-jekyll)
+
+  ;; Set up blog for export as an Org-mode project.
+  (setq org-publish-project-alist
+        '(("fasciism-posts"
+           :base-directory "~/.emacs.d/"
+           :base-extension "org"
+           :publishing-directory "~/src/fasciism/_posts/"
+           :publishing-function org-jekyll-publish-to-jekyll)
+          ("fasciism-images"
+           :base-directory "~/.emacs.d/images/"
+           :base-extension "gif\\|jpg\\|png\\|svg"
+           :publishing-directory "~/src/fasciism/img/"
+           :publishing-function org-publish-attachment)
+          ("fasciism"
+           :components ("fasciism-posts" "fasciism-images"))))
+#+END_SRC
