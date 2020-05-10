@@ -122,3 +122,5 @@ Finally, I need to get the Org-mode project reconfigured to use our new exporter
           ("fasciism"
            :components ("fasciism-posts" "fasciism-images"))))
 #+END_SRC
+
+Now I can use =C-c C-e= to access the Org Export Dispatcher to export either this post or this whole blog.
