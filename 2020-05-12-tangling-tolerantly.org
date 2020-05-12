@@ -1,3 +1,5 @@
+#+TITLE: Tangling Tolerantly
+
 The posts on this blog/configuration, including this one, [[https://fasciism.com/2017/01/01/emacs-bankruptcy/][do]] [[https://fasciism.com/2017/01/02/literate-configuration/][not]] [[https://fasciism.com/2017/03/01/gnus-kill-files/][contain]] [[https://fasciism.com/2017/07/19/git-over-here/][code]] that I want to be executed. Sometimes this is because the code belongs elsewhere (e.g., =init.el=), other times it's because I'm doing some sort of round-up or story. This entry is both.
 
 The core of my =init.el= is (roughly) the following:
