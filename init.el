@@ -9,18 +9,21 @@
 ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode
 ;; files.
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
-
 (defun mak::load-literate-config (dir &optional regex)
   "Load and evaluate the files in dir matching regex, except blacklisted files."
   (unless regex
     (setq regex ""))
-  (dolist (org (directory-files dir t (concat regex ".*\\.org$")))
-    (org-babel-load-file org)))
+  (dolist (org-file (directory-files dir t (concat regex ".*\\.org$")))
+    ;; This is a customized implementation of org-babel-load-file.
+    (let* ((el-file (concat (file-name-sans-extension org-file) ".el")))
+      (unless (org-file-newer-than-p
+               el-file
+               (file-attribute-modification-time (file-attributes org-file)))
+        (org-babel-tangle-file org-file el-file "emacs-lisp"))
+      ;; Some blog posts don't have any runnable code, and so do not produce a
+      ;; file when tangled.
+      (if (file-exists-p el-file)
+          (load-file el-file)))))
 
 (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
 

@@ -37,7 +37,3 @@ Now that we understand kill files, it's time for the punchline: We're not going 
 #+END_QUOTE
 
 So I'm working on getting my Gnus to work with score files. But I'm saving that for another day.
-
-#+BEGIN_SRC emacs-lisp :exports none
-  ;;; This block exists solely to prevent errors.
-#+END_SRC

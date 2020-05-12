@@ -33,7 +33,3 @@ Finally, some of the setup scripts I've been running into try to clone private r
   [url "git@github.com:"]
   	insteadOf = https://github.com/
 #+END_SRC
-
-#+BEGIN_SRC emacs-lisp :exports none
-  ;;; This block exists solely to prevent errors.
-#+END_SRC

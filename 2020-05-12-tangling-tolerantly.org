@@ -1,0 +1,76 @@
+The posts on this blog/configuration, including this one, [[https://fasciism.com/2017/01/01/emacs-bankruptcy/][do]] [[https://fasciism.com/2017/01/02/literate-configuration/][not]] [[https://fasciism.com/2017/03/01/gnus-kill-files/][contain]] [[https://fasciism.com/2017/07/19/git-over-here/][code]] that I want to be executed. Sometimes this is because the code belongs elsewhere (e.g., =init.el=), other times it's because I'm doing some sort of round-up or story. This entry is both.
+
+The core of my =init.el= is (roughly) the following:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun mak::load-literate-config (dir &optional regex)
+    (dolist (org (directory-files dir t (concat regex ".*\\.org$")))
+      (org-babel-load-file org)))
+#+END_SRC
+
+=org-babel-load-file= throws an error if it tangles a file, but the result has no executable code in it, so it neglects to write the output file, and then tries to load the file. This is probably desirable behaviour for some users, but not for me. I've been getting around this by adding the following section to the bottom of the affected posts:
+
+#+BEGIN_SRC org :tangle no
+  ,#+BEGIN_SRC emacs-lisp :exports none
+    ;;; This block exists solely to prevent errors.
+  ,#+END_SRC
+#+END_SRC
+
+That's ugly. Let's fix it. The first way I thought to fix it was to create the output file unconditionally before invoking the tangler:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun mak::load-literate-config (dir &optional regex)
+    (dolist (org (directory-files dir t (concat regex ".*\\.org$")))
+      ;; Some posts don't contain any executable code, so no file is created. Make
+      ;; an empty file with the expected name.
+      (write-region "" nil (concat (file-name-sans-extension org) ".el"))
+      (org-babel-load-file org)))
+#+END_SRC
+
+After deleting all my =*.el= files I restarted my Emacs to find a default installation. Having not seen such a thing in years, I immediately screamed in horror and took a few minutes to calm down. Default Emacs is ugly. After I'd relaxed, finished my lemon ginger tea, and spent some time focusing on my breathing I resumed my pursuit of slightly nicer blog post files. To figure out what went wrong, I ran =C-h f org-babel-load-file= and read:
+
+#+BEGIN_VERSE
+org-babel-load-file is an autoloaded interactive compiled Lisp function in
+‘org.el’.
+
+(org-babel-load-file FILE &optional COMPILE)
+
+Load Emacs Lisp source code blocks in the Org FILE.
+This function exports the source code using ‘org-babel-tangle’
+and then loads the resulting file using ‘load-file’.  With
+optional prefix argument COMPILE, the tangled Emacs Lisp file is
+byte-compiled before it is loaded.
+#+END_VERSE
+
+Following the link to =org.el= brought me to the function's definition, which is (roughly):
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun org-babel-load-file (file &optional compile)
+    (let* ((tangled-file (concat (file-name-sans-extension file) ".el")))
+      (unless (org-file-newer-than-p
+               tangled-file
+               (file-attribute-modification-time (file-attributes file)))
+        (org-babel-tangle-file file tangled-file "emacs-lisp"))
+      (if compile
+          (byte-compile-file tangled-file 'load))
+      (load-file tangled-file)))
+#+END_SRC
+
+=org-babel-load-file= doesn't tangle a file if the =.org= file is older than the =.el= file, so making a blank =.el= file before calling the tangler was never going to work. The straightforward fix that I could see for this was to reimplement =org-babel-load-file= inside =mak::load-literate-config=. So this is what I ended up with:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun mak::load-literate-config (dir &optional regex)
+    (dolist (org-file (directory-files dir t (concat regex ".*\\.org$")))
+      ;; This is a customized implementation of org-babel-load-file.
+      (let* ((el-file (concat (file-name-sans-extension org-file) ".el")))
+        (unless (org-file-newer-than-p
+                 el-file
+                 (file-attribute-modification-time (file-attributes org-file)))
+          (org-babel-tangle-file org-file el-file "emacs-lisp"))
+        ;; Some blog posts don't have any runnable code, and so do not produce a
+        ;; file when tangled.
+        (if (file-exists-p el-file)
+            (load-file el-file)))))
+#+END_SRC
+
+Complexity has to live somewhere, and I'd rather it live in my =init.el= with comments surrounding it than be scattered throughout my blog posts waiting for me to trip over the problem again.

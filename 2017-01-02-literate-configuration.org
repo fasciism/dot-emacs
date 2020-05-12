@@ -47,8 +47,4 @@ The init file that I'm using right now takes every various files with the =.org=
   (mak::load-literate-config "~/.emacs.p")
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp :exports none
-  ;;; This block exists solely to prevent errors.
-#+END_SRC
-
 I have edited the bottom of the file to only import my blog posts, both published and unscheduled drafts, and my private configuration files.
