@@ -1,6 +1,6 @@
-#+TITLE: Aggregate, Don't Poll
+#+TITLE: Accumulate, Don't Poll
 
-We're in the middle of the pandemic. This is my tenth year of working from home. My three kids and wife are all in the house with me, as all activities are cancelled and have been for two months. My brain has been melting, and refreshing the aggregators and social media sites I favour is more problematic than it used to be. The solution seems clear to me: aggregate, don't poll.
+We're in the middle of the pandemic. This is my tenth year of working from home. My three kids and wife are all in the house with me, as all activities are cancelled and have been for two months. My brain has been melting, and refreshing the aggregators and social media sites I favour is more problematic than it used to be. The solution seems clear to me: accumulate, don't poll.
 
 When I was keeping my programs separate, I had a dedicated tmux window for Newsbeuter, which is an _amazing_ feed reader that is best described as "The Mutt of Feed Readers". It's good, but it's not Emacs.
 
@@ -25,7 +25,7 @@ I don't set a key for Elfeed because I'd rather invoke it with =M-x elfeed=. I t
 
 With that small bit of configuration done, we already have something that looks usable:
 
-[[https://fasciism.com/img/2020-05-13-aggregate-dont-poll.png]]
+[[https://fasciism.com/img/2020-05-13-accumulate-dont-poll.png]]
 
 The normal navigation/search keys work as expected, =Enter= opens an entry into an =*elfeed-entry*= buffer with metadata at the top including a link to the post, images are displayed, hitting =Enter= on links opens them in Firefox, and =q= kills the buffer.
 
