@@ -1,0 +1,32 @@
+#+TITLE: Aggregate, Don't Poll
+
+We're in the middle of the pandemic. This is my tenth year of working from home. My three kids and wife are all in the house with me, as all activities are cancelled and have been for two months. My brain has been melting, and refreshing the aggregators and social media sites I favour is more problematic than it used to be. The solution seems clear to me: aggregate, don't poll.
+
+When I was keeping my programs separate, I had a dedicated tmux window for Newsbeuter, which is an _amazing_ feed reader that is best described as "The Mutt of Feed Readers". It's good, but it's not Emacs.
+
+Elfeed is almost exactly like Newsbeuter, except by virtue of being inside Emacs I can customize its behaviours more conveniently, and get integration into Org.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package elfeed
+    :ensure t
+    :pin melpa)
+#+END_SRC
+
+I don't set a key for Elfeed because I'd rather invoke it with =M-x elfeed=. I try to save keybindings for things that I do constantly, and as part of a workflow. I should be checking Elfeed a couple times a day, ideally. I'll start by adding a few feeds that I want to make sure I get everything they publish.
+
+#+BEGIN_SRC emacs-lisp
+  (setq elfeed-feeds
+        '("https://fasciism.com/feed.xml"
+          "https://leahneukirchen.org/trivium/index.atom"
+          "https://www.daemonology.net/blog/index.rss"
+          "https://www.spinellis.gr/blog/dds-blog-rss.xml"
+          "http://n-gate.com/index.atom"))
+#+END_SRC
+
+With that small bit of configuration done, we already have something that looks usable:
+
+[[https://fasciism.com/img/2020-05-13-aggregate-dont-poll.png]]
+
+The normal navigation/search keys work as expected, =Enter= opens an entry into an =*elfeed-entry*= buffer with metadata at the top including a link to the post, images are displayed, hitting =Enter= on links opens them in Firefox, and =q= kills the buffer.
+
+I was happy enough with the defaults that I lost an hour to reading my feeds while writing this post. I can almost feel my brain solidifying again. Now I just need to get Twitter and Reddit managed better.
