@@ -1,0 +1,50 @@
+#+title: Org Blog Templates
+
+I was considering what part of my workflow to improve next when I remembered that I've had to type =#+begin_= and =#+end_= a lot recently. I looked at =org-structure-template-alist=, but realized that if I wanted to start using templating in my workflows then it should be something universal, not something only useful within org-mode. Enter YASnippet:
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :pin melpa
+    :mode "/emacs.[dp]/snippets/[^/]*/"
+    :config
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets" "~/.emacs.p/snippets"))
+    (yas-global-mode t))
+#+end_src
+
+A great project exists called [[https://github.com/AndreaCrotti/yasnippet-snippets][yasnippet-snippets]], containing snippets for most programming languages. While that's a great reasource, I'd much rather import and customize the snippets I like and intend to use than import a massive collection of them. I've hardwired YASnippet to look in both my public (=~/.emacs.d=) and my private (=~/.emacs.p=) configurations for snippets. This allows me to keep, for example, templates for my emails and Git commits private.
+
+Most snippets I have seen online begin with ~# -*- mode: snippet -*-~, which tells Emacs to use the major mode =snippet-mode= for the file's buffer. I dislike using such things, and instead have used the =:mode= keyword to enable the major mode for all files within subdirectories of =yas-snippet-dirs=.
+
+Now to make three templates that reduce the effort of writing these blog posts ever so slightly. First up is a source block, which is used for both executing code (as above) and displaying code without executing it (as below):
+
+#+begin_src snippet :tangle no
+  # name: src block
+  # key: <s
+  # --
+  ,#+begin_src ${1:emacs-lisp}
+  $0
+  ,#+end_src
+#+end_src
+
+#+begin_src snippet :tangle no
+  # name: example block
+  # key: <e
+  # --
+  ,#+begin_example
+  $0
+  ,#+end_example
+#+end_src
+
+#+begin_src snippet :tangle no
+  # name: verse block
+  # key: <v
+  # --
+  ,#+begin_verse
+  $0
+  ,#+end_verse
+#+end_src
+
+The relevant difference between example and verse blocks, for my purposes, is that example blocks don't wrap text, while verse blocks do.
+
+Now typing =<s[TAB]= expands the =src block= template if I'm in an =org-mode= buffer.
