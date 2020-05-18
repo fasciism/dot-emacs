@@ -56,7 +56,7 @@ AVAILABLE DICTIONARIES (path is not mandatory for -d option):
 
 Next, I [[https://en.wikipedia.org/wiki/Eating_your_own_dog_food][dogfood]] Hunspell by running it on its own README, and after ignoring the many false-positives I found an actual mistake:
 
-[[https://fasciism.com/img/2020-05-19-spelling.png]]
+[[https://fasciism.com/img/2020-05-18-spellcheck-dictionaries.png]]
 
 Hunspell was still screaming about not being able to find dictionaries, so I need to be pulling things out of shell environment variables properly. There's a package for exactly that:
 
