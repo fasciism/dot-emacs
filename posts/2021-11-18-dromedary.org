@@ -1,0 +1,8 @@
+Programming in Go is my day job, and for the last several years I've been spending an unnecessary amount of effort moving around its camelCase identifiers. That ends today, with =subword-mode=. Subword mode alters the normal word-relative movement commands so that they consider =MyDBClient= to be three words (i.e., =My=, =DB=, and =Client=) instead of one.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'go-mode-hook
+            (lambda () (subword-mode 1)))
+#+END_SRC
+
+I considered setting this mode globally, but that feels unwise. I frequently use macros in non-Go buffers, and perform a lot of word-relative movement which could be negatively impacted by subword mode being enabled globally.

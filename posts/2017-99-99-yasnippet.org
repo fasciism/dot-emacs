@@ -1,0 +1,14 @@
+#+BEGIN_SRC emacs-lisp
+    (use-package yasnippet
+      :ensure t
+      :pin elpa
+      :diminish yas-minor-mode
+      :init
+      (setq yas-snippet-dirs
+            '("~/.emacs.d/snippets"
+              "~/.emacs.p/snippets"))
+      :config
+      (yas-global-mode 1))
+#+END_SRC
+
+After that I cloned what looks like the [[https://github.com/AndreaCrotti/yasnippet-snippets][main public snippet repository]] into =~/.emacs.d/snippets= and ran =yas-reload-all=. This will make many things, especially writing this blog much easier. The frequency which I have typed =#+BEGIN_SRC= over the last month is astounding.

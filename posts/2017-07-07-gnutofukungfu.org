@@ -1,0 +1,32 @@
+https://blogs.fsfe.org/jens.lechtenboerger/2014/03/23/certificate-pinning-for-gnu-emacs/
+
+#+BEGIN_VERSE
+% gnutls-cli --tofu -p 25  --starttls mail.kolybabi.com
+% gnutls-cli --tofu -p 587 --starttls mail.kolybabi.com
+% gnutls-cli --tofu -p 993            mail.kolybabi.com
+
+% gnutls-cli --tofu -p 25  --starttls smtp.gmail.com
+% gnutls-cli --tofu -p 587 --starttls smtp.gmail.com
+% gnutls-cli --tofu -p 993            imap.gmail.com
+
+% gnutls-cli --tofu -p 563 news.gmane.org
+% gnutls-cli --tofu -p 563 news.gwene.org
+
+% gnutls-cli --tofu -p 443 elpa.gnu.org
+% gnutls-cli --tofu -p 443 marmalade-repo.org
+% gnutls-cli --tofu -p 443 melpa.org
+% gnutls-cli --tofu -p 443 stable.melpa.org
+#+END_VERSE
+
+First we need to lie to Emacs and tell it that GnuTLS is not available to it, so it won't try and call it directly.
+
+#+BEGIN_SRC emacs-lisp
+  ;(setq gnutls-available-p nil)
+#+END_SRC
+
+Next we need to provide explicit commands to use in place of GnuTLS since we've told Emacs that it's not available. For this we'll actually use GnuTLS, but with the =--strict-tofu= option that only allows connections to hosts in the =~/.gnutls/known_hosts= file.
+
+#+BEGIN_SRC emacs-lisp
+  ;(setq tls-program '("gnutls-cli --strict-tofu -p %p %h"))
+  ;(setq imap-ssl-program '("gnutls-cli --strict-tofu -p %p %s"))
+#+END_SRC

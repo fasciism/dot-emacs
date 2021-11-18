@@ -1,0 +1,22 @@
+I needed to sort through a lot of email recently. This got really annoying in a hurry. I use a pseudo-GTD system where I have several folders that are ordered with numbers in their names, so I decided to bind the number keys so that pressing them moves either the currently-selected article or all marked articles to the associated group.
+
+#+BEGIN_SRC emacs-lisp :exports none
+  ;;; -*- lexical-binding: t -*-
+#+END_SRC
+
+The first thing I had to do was declare that this file, when converted to =.el= format, would use lexical binding. The reason for this is that the lambdas we create need to have of their =group= variable bound.
+
+#+BEGIN_SRC emacs-lisp :exports none
+  (dolist (name '("0-capture"
+                  "1-deferred"
+                  "2-waiting-for"
+                  "7-tickler"
+                  "8-someday-maybe"
+                  "9-archive"))
+    (let ((group (format "nnimap+kolybabi:%s" name))
+          (number (substring name 0 1)))
+      (define-key gnus-summary-mode-map number
+        (lambda () (interactive)
+          (gnus-summary-move-article nil group nil)))))
+#+END_SRC
+

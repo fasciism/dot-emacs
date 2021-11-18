@@ -1,6 +1,8 @@
 As you might have guessed, writing my Emacs configuration in this style leads me to need to reload the system often to ensure that things are in the correct order as I make new drafts and go back to fix mistakes. So far I have been handling this by manually calling =M-x kill-emacs= and running the program anew. Now that we have packages available, [[https://github.com/iqbalansari/restart-emacs][restart-emacs]] gives us a better way:
 
 #+BEGIN_SRC emacs-lisp
+  (require 'bind-key)
+
   (defun mak::restart-emacs-or-release-file ()
     (interactive)
     (if server-buffer-clients

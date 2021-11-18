@@ -1,6 +1,6 @@
 An unscheduled dive into the world of [[https://nmap.org/book/nse.html][Nmap Scripting]] last night has caused me to need Emacs to be configured to handle Lua code. As usual, packages are there to make life better:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package lua-mode
     :ensure t
     :pin melpa-stable

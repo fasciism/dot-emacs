@@ -1,0 +1,21 @@
+I've been diving into a lot of files that are poorly-organized recently, and I came across Origami-Mode, which seems like it would really help me get my bearings.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package origami
+    :ensure t
+    :pin melpa
+    :bind
+    ("C-F" . origami-recursively-toggle-node)
+    ("C-c f o" . origami-open-all-nodes)
+    ("C-c f c" . origami-close-all-nodes)
+    ("C-c f ." . origami-show-only-node))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun mak::folding ()
+    (interactive)
+    (save-place-mode 1)
+    (origami-mode 1)
+    ;; The line below must be called after savehist runs
+    (call-interactively 'origami-show-only-node))
+#+END_SRC
