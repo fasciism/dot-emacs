@@ -24,4 +24,11 @@ There are many, many packages to choose from, and it's been hard living without 
     (require 'use-package))
 #+END_SRC
 
-This tells Emacs to download =use-package= if it's not already installed. For most of this week we will revel in silly little cosmetic changes that make me happy.
+This tells Emacs to download =use-package= if it's not already installed. By default =use-package= doesn't download the packages we request, but we can change this behaviour either by settings =:ensure t= in every invocation, or we could set this globally:
+
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t)
+#+END_SRC
+
+For most of this week we will revel in silly little cosmetic changes that make me happy.
