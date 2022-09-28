@@ -9,7 +9,7 @@ Now let's get that package in the system.
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :ensure t
-    :pin melpa-stable
+    :pin melpa
     :diminish helm-mode
     :bind
     ("M-x" . helm-M-x)
