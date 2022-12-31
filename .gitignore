@@ -1,8 +1,9 @@
 # Ignore everything by default.
-*
+/*
 
-# Include this file.
+# Include the repository management files.
 !/.gitignore
+!/README.org
 
 # Include the bootstrap file.
 !/init.el
@@ -10,8 +11,29 @@
 # Include the literate org-mode files in the posts directory, first explicitly
 # allowing the directory itself, then allowing select files in the directory.
 !/posts
+!/posts/.keep
 !/posts/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.org
+
+# Include the draft posts so that they are visible in Magit prior to moving
+# them to the posts directory. Files in this directory are rarely dated.
+!/drafts
+!/drafts/.keep
+!/drafts/*.org
 
 # Include the images directory and all its contents, which are part of the
 # posts.
 !/images/
+
+# Explicitly ignore the directories we do not want to commit. We don't have to
+# do this since everything is ignored by default, but let's be paranoid.
+!/private
+/private/*
+!/private/.keep
+
+!/snippets
+/snippets/*
+!/snippets/.keep
+
+!/state
+/state/*
+!/state/.keep
