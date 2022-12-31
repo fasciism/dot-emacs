@@ -13,7 +13,7 @@ If the current frame has no client, kill Emacs itself.
 
 We can unbind the key using =global-unset-key=:
 
-#+BEGIN_SRC emacs-lisp :exports code
+#+BEGIN_SRC emacs-lisp :tangle no
   (global-unset-key (kbd "C-x C-c"))
 #+END_SRC
 

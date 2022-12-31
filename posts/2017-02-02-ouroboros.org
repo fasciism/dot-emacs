@@ -2,7 +2,9 @@ As you might have guessed, writing my Emacs configuration in this style leads me
 
 #+BEGIN_SRC emacs-lisp
   (require 'bind-key)
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle no
   (defun mak::restart-emacs-or-release-file ()
     (interactive)
     (if server-buffer-clients
