@@ -10,44 +10,53 @@
 ;; files.
 
 ;; Enforce a minimum Emacs version.
-(let ((min-ver "27.1")
+(let ((min-ver "29.0")
       (cur-ver emacs-version))
   (if (version< cur-ver min-ver)
       (error "This configuration requires Emacs v%s or above, but v%s found." min-ver cur-ver)))
 
+;; This is at the very start of my startup because my work laptops are always
+;; MacBooks, and if there is any configuration error with Emacs it renders the
+;; built-in keyboard absolutely unusable to me if these settings have not yet
+;; been applied.
+;;
+;; In addition to these settings, I need caps lock to be set as control in the
+;; MacBook's system preferences.
+(setq mac-command-key-is-meta t)
+(setq mac-command-modifier 'meta)
+(setq mac-option-key-is-meta nil)
+(setq mac-option-modifier nil)
+
 ;; Create a build directory so .el files don't clutter the repo.
-(defvar mak::el-build-dir (concat user-emacs-directory "build/"))
+(defvar mak::el-build-dir (expand-file-name "build" user-emacs-directory))
 
 ;; This is a customized implementation of org-babel-load-file.
 (defun mak::execute-blog-post (org-file)
-  "Tangle, byte-compile, and load a blog post."
-  (let* ((file-rel (file-relative-name (file-name-sans-extension org-file) user-emacs-directory))
-         ;; Store derived files within the build directory matching their
-         ;; location in the configuration directory. For example:
-         ;; emacs/path/to/foo.org -> emacs/build/path/to/foo.el)
-         (dest-dir (file-name-directory (concat mak::el-build-dir file-rel)))
-         (el-file (concat mak::el-build-dir file-rel ".el"))
-         (elc-file (concat mak::el-build-dir file-rel ".elc")))
-    (make-directory dest-dir t)
-
+  "Tangle and load a blog post."
+  (let* ((base (file-name-base org-file))
+	 (src-abs-dir (directory-file-name (file-name-directory org-file)))
+	 (src-rel-dir (file-relative-name src-abs-dir user-emacs-directory))
+         (dst-abs-dir (expand-file-name src-rel-dir mak::el-build-dir))
+         (el-file (expand-file-name (concat base ".el") dst-abs-dir)))
+    (make-directory dst-abs-dir t)
     ;; Tangle file (.org -> .el) if the .org is newer.
     (if (file-newer-than-file-p org-file el-file)
-      (org-babel-tangle-file org-file el-file "emacs-lisp"))
-
-    ;; Compile file (.el -> .elc) if the .el is newer.
-    (if (file-newer-than-file-p el-file elc-file)
-      (byte-compile-file el-file))
-
+	(org-babel-tangle-file org-file el-file "emacs-lisp"))
     ;; Some blog posts don't have any runnable code, and so do not produce a
     ;; file when tangled.
-    (if (file-exists-p elc-file)
-        (load-file elc-file))))
+    (if (file-exists-p el-file)
+	(load-file el-file))))
 
 (defun mak::load-literate-config (dir &optional regex)
-  "Load and evaluate the files in dir matching regex, except blacklisted files."
-  (setq regex (or regex ""))
-  (dolist (org-file (directory-files (concat user-emacs-directory dir) t (concat regex ".*\\.org$")))
-    (mak::execute-blog-post org-file)))
+  "Load and evaluate the files in dir matching regex, except .org files."
+  (unless regex (setq regex ""))
+  (let* ((path (expand-file-name dir user-emacs-directory))
+	 (regex (concat regex ".*\\.org$"))
+	 (files (directory-files path t regex)))
+    (dolist (org-file files)
+      (message "Loading %s..." org-file)
+      (mak::execute-blog-post org-file)
+      (message "Loaded %s." org-file))))
 
 (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
 
@@ -65,8 +74,17 @@
   (require 'org-install)
   (require 'ob-tangle))
 
+;; Create a private directory in which I will keep all files that I intend to
+;; open with Emacs but do not want to publish. Examples include private Eshell
+;; aliases and Gnus configurations.
+(setq private-emacs-directory (expand-file-name "private" user-emacs-directory))
+
+;; Create a state directory in which I will keep all files that I do not intend
+;; to open with Emacs. Examples include key frequency data and Eshell history.
+(setq state-emacs-directory (expand-file-name "state" user-emacs-directory))
+
 ;; Load the customization variables from another file.
-(setq custom-file (concat user-emacs-directory "private/custom.el"))
+(setq custom-file (expand-file-name "custom.el" private-emacs-directory))
 (load custom-file 'noerror)
 
 ;; Load up all literate org-mode files matching the regex in each directory.
