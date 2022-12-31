@@ -1,6 +1,7 @@
 Emacs has an excellent undo system, once you get the hang of it. But as with all things Emacs, it could be better!
 
 #+begin_src emacs-lisp
+  (setq mak::undo-tree-dir (expand-file-name "undo-tree-history" state-emacs-directory))
   (use-package undo-tree
     :pin elpa
     :diminish undo-tree-mode
@@ -13,15 +14,14 @@ Emacs has an excellent undo system, once you get the hang of it. But as with all
     :custom
     (undo-tree-visualizer-diff t)
     (undo-tree-visualizer-timestamps t)
-    (undo-tree-history-directory-alist `(("." . ,(expand-file-name "undo-tree-history" state-emacs-directory)))))
+    (undo-tree-history-directory-alist `(("." . ,mak::undo-tree-dir))))
 #+end_src
 
 It's important to note that the files in the =undo-tree-history= directory will all be hidden, which can cause some confusion. To prevent this, let's write a message file:
 
 #+begin_src emacs-lisp
-  (let ((dir (assoc-default "." undo-tree-history-directory-alist)))
-    (make-directory dir t)
-    (write-region "" nil (expand-file-name "ALL-FILES-IN-THIS-DIRECTORY-ARE-HIDDEN" dir)))
+  (make-directory mak::undo-tree-dir t)
+  (write-region "" nil (expand-file-name "ALL-FILES-IN-THIS-DIRECTORY-ARE-HIDDEN" mak::undo-tree-dir))
 #+end_src
 
 Let's see how the undo tree looks for this buffer:

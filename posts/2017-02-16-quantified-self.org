@@ -5,11 +5,16 @@ One thing I've always liked about the Windows Add/Remove Programs interface is t
     :ensure t
     :pin melpa-stable
     :init
-    (setq keyfreq-file "~/.emacs.p/keyfreq/statistics"
-          keyfreq-file-lock "~/.emacs.p/keyfreq/lockfile")
+    (setq keyfreq-dir (expand-file-name "keyfreq" state-emacs-directory)
+          keyfreq-file (expand-file-name "statistics" keyfreq-dir) 
+          keyfreq-file-lock (expand-file-name "lockfile" keyfreq-dir))
+    (make-directory keyfreq-dir t)
     :config
     (keyfreq-mode 1)
     (keyfreq-autosave-mode 1))
 #+END_SRC
+
+#+RESULTS:
+: t
 
 When I first installed this package, I didn't honestly think it would be that useful. But since installing it, I have used its output to appreciate how much my usage of certain commands is changing.

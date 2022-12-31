@@ -1,5 +1,15 @@
 I stopped doing development for a living three years ago, having moved into security consulting and penetration testing since. Now that I'm setting up Emacs again, I can't believe how much I have missed [[https://magit.vc/][Magit]]. While Org-mode and Gnus are the main killer apps for Emacs, they are sprawling. Magit is extremely fast, tight, focused, and beautiful. As mentioned [[http://fasciism.com/2017/02/09/cue-ball/][yesterday]], I have been doing some open source development recently, and one thing I believe in when making contributions to the code of others is tight diffs. Magit makes it so that the use of a =git add -p= equivalent is very accessible.
 
+Before we install Magit, we will first encourage its wonderful user interaction library Transient to store its state files somewhere out-of-the-way:
+
+#+BEGIN_SRC emacs-lisp
+  (setq transient-directory (expand-file-name "transient" state-emacs-directory)
+        transient-history-file (expand-file-name "history.el" transient-directory)
+        transient-levels-file (expand-file-name "levels.el" transient-directory)
+        transient-values-file (expand-file-name "values.el" transient-directory))
+  (make-directory transient-directory t)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
