@@ -3,6 +3,7 @@ One day into using Company and I admit that I'm enjoying it a great deal. One is
 #+BEGIN_SRC emacs-lisp
   (require 'company-dabbrev-code)
   (add-to-list 'company-dabbrev-code-modes 'conf-mode)
+  (add-to-list 'company-dabbrev-code-modes 'go-mode)
 #+END_SRC
 
 I suspect I'll find more modes to add to =company-dabbrev-code-modes= over time.
